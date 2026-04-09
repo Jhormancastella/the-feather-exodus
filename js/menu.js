@@ -152,71 +152,120 @@ function _startCreditsDucks(modal) {
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    // Cargar spritesheet
     const sheet = new Image();
     sheet.src = 'https://i0.wp.com/github.com/elpsk/Unity3D-Nintentdo_Duck_Hunt/raw/master/Assets/Resources/duckhunt_various_sheet.png?ssl=1';
 
-    // Definición de sprites por tipo (x, y en el sheet, 36x36)
+    // Sprites del sheet: vuelo, caída
     const TYPES = [
-        { frames: [{x:0,y:115},{x:36,y:115},{x:72,y:115}], color: 'black'  },
-        { frames: [{x:0,y:153},{x:36,y:153},{x:72,y:153}], color: 'red'    },
-        { frames: [{x:108,y:115},{x:144,y:115},{x:180,y:115}], color: 'brown' }
+        { fly: [{x:0,y:115},{x:36,y:115},{x:72,y:115}], fall: [{x:0,y:189},{x:36,y:189}] },
+        { fly: [{x:0,y:153},{x:36,y:153},{x:72,y:153}], fall: [{x:0,y:189},{x:36,y:189}] },
+        { fly: [{x:108,y:115},{x:144,y:115},{x:180,y:115}], fall: [{x:0,y:189},{x:36,y:189}] }
     ];
 
-    // Crear patos con posiciones y velocidades aleatorias
-    const ducks = Array.from({ length: 8 }, () => {
-        const type  = TYPES[Math.floor(Math.random() * TYPES.length)];
-        const dir   = Math.random() > 0.5 ? 1 : -1;
-        return {
-            x:     dir === 1 ? -40 : W + 40,
-            y:     30 + Math.random() * (H - 80),
-            vx:    dir * (0.6 + Math.random() * 0.8),
-            vy:    (Math.random() - 0.5) * 0.5,
-            dir,
-            frame: Math.floor(Math.random() * 3),
-            timer: 0,
-            type,
-            delay: Math.random() * 120   // frames de espera antes de aparecer
-        };
-    });
+    // Estados posibles
+    const STATES = ['flying', 'hit', 'falling'];
 
-    let frameCount = 0;
+    function _makeDuck() {
+        const type  = TYPES[Math.floor(Math.random() * TYPES.length)];
+        const state = STATES[Math.floor(Math.random() * STATES.length)];
+        const dir   = Math.random() > 0.5 ? 1 : -1;
+
+        // Patos cayendo empiezan desde arriba en X aleatorio
+        if (state === 'falling') {
+            return {
+                type, state,
+                x: 20 + Math.random() * (W - 40),
+                y: -40,
+                vx: (Math.random() - 0.5) * 1.2,
+                vy: 1.2 + Math.random() * 1.5,
+                dir: Math.random() > 0.5 ? 1 : -1,
+                frame: 0, timer: 0,
+                hitTimer: 0,
+                delay: Math.random() * 100,
+                alpha: 1
+            };
+        }
+        // Patos volando entran por los lados
+        return {
+            type, state,
+            x:   dir === 1 ? -40 : W + 40,
+            y:   20 + Math.random() * (H - 60),
+            vx:  dir * (0.5 + Math.random() * 0.9),
+            vy:  (Math.random() - 0.5) * 0.6,
+            dir,
+            frame: 0, timer: 0,
+            hitTimer: state === 'hit' ? 18 : 0,  // hit: parpadea N frames luego cae
+            delay: Math.random() * 120,
+            alpha: 1
+        };
+    }
+
+    const ducks = Array.from({ length: 10 }, _makeDuck);
     let rafId;
 
     function draw() {
         if (!document.body.contains(canvas)) { cancelAnimationFrame(rafId); return; }
         ctx.clearRect(0, 0, W, H);
-        frameCount++;
 
-        ducks.forEach(d => {
+        ducks.forEach((d, i) => {
             if (d.delay > 0) { d.delay--; return; }
 
-            // Mover
-            d.x += d.vx;
-            d.y += d.vy;
+            d.timer++;
 
-            // Rebotar verticalmente
-            if (d.y < 10 || d.y > H - 46) d.vy *= -1;
+            // ── Lógica por estado ──────────────────────────────
+            if (d.state === 'flying') {
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.y < 10 || d.y > H - 50) d.vy *= -1;
+                if (d.x > W + 50 || d.x < -50) ducks[i] = _makeDuck();
 
-            // Reiniciar si sale por los lados
-            if (d.x > W + 50 || d.x < -50) {
-                d.dir = d.x < 0 ? 1 : -1;
-                d.x   = d.dir === 1 ? -40 : W + 40;
-                d.y   = 30 + Math.random() * (H - 80);
-                d.vx  = d.dir * (0.6 + Math.random() * 0.8);
-                d.delay = 40 + Math.random() * 80;
+                // Animar frames de vuelo cada 8 ticks
+                if (d.timer % 8 === 0) d.frame = (d.frame + 1) % 3;
+
+            } else if (d.state === 'hit') {
+                // Parpadea en su posición, luego pasa a falling
+                d.x += d.vx * 0.3;
+                d.alpha = d.timer % 4 < 2 ? 0.3 : 1;
+                d.hitTimer--;
+                if (d.hitTimer <= 0) {
+                    d.state  = 'falling';
+                    d.vy     = 1.5;
+                    d.vx     = (Math.random() - 0.5) * 1.5;
+                    d.alpha  = 1;
+                    d.frame  = 0;
+                    d.timer  = 0;
+                }
+
+            } else if (d.state === 'falling') {
+                d.x  += d.vx;
+                d.y  += d.vy;
+                d.vy += 0.08;  // gravedad
+                // Rotar visualmente al caer (con transform en canvas)
+                if (d.timer % 6 === 0) d.frame = (d.frame + 1) % 2;
+                if (d.y > H + 50) ducks[i] = _makeDuck();
             }
 
-            // Animar frames cada 8 ticks
-            d.timer++;
-            if (d.timer % 8 === 0) d.frame = (d.frame + 1) % 3;
+            // ── Elegir sprite ──────────────────────────────────
+            let sp;
+            if (d.state === 'falling' || d.state === 'hit') {
+                sp = d.type.fall[d.frame % 2];
+            } else {
+                sp = d.type.fly[d.frame];
+            }
 
-            const sp = d.type.frames[d.frame];
-
+            // ── Dibujar ────────────────────────────────────────
             ctx.save();
+            ctx.globalAlpha = d.alpha * 0.7;
             ctx.translate(d.x + 18, d.y + 18);
-            if (d.dir === 1) ctx.scale(-1, 1);   // voltear si va a la derecha
-            ctx.globalAlpha = 0.55;               // semi-transparente para no tapar el texto
+
+            if (d.state === 'falling') {
+                // Rotar el pato al caer
+                const rot = Math.min(Math.PI, (d.vy / 6) * Math.PI);
+                ctx.rotate(d.dir === 1 ? rot : -rot);
+            }
+
+            if (d.dir === 1 && d.state !== 'falling') ctx.scale(-1, 1);
+
             ctx.drawImage(sheet, sp.x, sp.y, 36, 36, -18, -18, 36, 36);
             ctx.restore();
         });
@@ -225,7 +274,6 @@ function _startCreditsDucks(modal) {
     }
 
     sheet.onload = () => { rafId = requestAnimationFrame(draw); };
-    // Si ya estaba cacheada
     if (sheet.complete) rafId = requestAnimationFrame(draw);
 }
 
