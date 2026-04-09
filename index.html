@@ -103,14 +103,6 @@
             WASD: Mover &nbsp;|&nbsp; TAB: Cambiar Pato &nbsp;|&nbsp; ESPACIO: Boost
         </div>
 
-        <div id="mobile-controls">
-            <div id="joystick"><div id="joy-knob"></div></div>
-            <div class="mobile-btn-group">
-                <button class="btn btn-switch" id="btn-switch">CAMBIAR</button>
-                <button class="btn btn-boost"  id="btn-boost">BOOST</button>
-            </div>
-        </div>
-
         <div id="screen-level">
             <h1>NIVEL <span id="next-lvl-num">2</span></h1>
             <p>Los patos se van!</p>
@@ -122,6 +114,15 @@
             <p>Nivel: <span id="final-level">1</span></p>
             <p>Puntuacion: <span id="final-score">0</span></p>
             <button class="start-btn" id="restart-btn">REINTENTAR</button>
+        </div>
+    </div>
+
+    <!-- Controles móviles fuera del game-container para evitar overflow:hidden -->
+    <div id="mobile-controls">
+        <div id="joystick"><div id="joy-knob"></div></div>
+        <div class="mobile-btn-group">
+            <button class="btn btn-switch" id="btn-switch">CAMBIAR</button>
+            <button class="btn btn-boost"  id="btn-boost">BOOST</button>
         </div>
     </div>
 

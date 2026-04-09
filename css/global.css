@@ -25,6 +25,8 @@ body {
     justify-content: center;
     align-items: center;
     background: #000;
+    /* overflow visible para que position:fixed de controles funcione */
+    overflow: visible;
 }
 
 #game-container {

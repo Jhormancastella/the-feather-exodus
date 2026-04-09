@@ -78,28 +78,26 @@
 
 /* ── CONTROLES MÓVILES ───────────────────────────────────────── */
 #mobile-controls {
-    position: absolute;
-    bottom: 0;
+    position: fixed;
+    bottom: 18%;
     left: 0;
     width: 100%;
-    height: clamp(110px, 22vh, 150px);
     display: none;
-    padding: clamp(6px, 1.5vh, 12px) clamp(10px, 3vw, 24px);
-    padding-bottom: max(clamp(8px, 2vh, 14px), env(safe-area-inset-bottom, 0px));
+    padding: 12px clamp(12px, 4vw, 28px);
     justify-content: space-between;
     align-items: center;
-    z-index: 100;
-    background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%);
+    z-index: 200;
+    background: transparent;
     pointer-events: none;
     box-sizing: border-box;
 }
 
 /* Joystick */
 #joystick {
-    width:  clamp(76px, 17vw, 110px);
-    height: clamp(76px, 17vw, 110px);
-    background: rgba(255,255,255,0.12);
-    border: 2px solid rgba(255,255,255,0.35);
+    width:  clamp(88px, 20vw, 120px);
+    height: clamp(80px, 20vw, 120px);
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.4);
     border-radius: 50%;
     position: relative;
     pointer-events: all;
@@ -107,8 +105,8 @@
 }
 
 #joy-knob {
-    width:  clamp(28px, 6.5vw, 42px);
-    height: clamp(28px, 6.5vw, 42px);
+    width:  clamp(32px, 7.5vw, 46px);
+    height: clamp(32px, 7.5vw, 46px);
     background: rgba(255,255,255,0.9);
     border-radius: 50%;
     position: absolute;
@@ -118,6 +116,35 @@
 }
 
 /* Grupo de botones derecha */
+.mobile-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    pointer-events: all;
+    flex-shrink: 0;
+}
+
+.btn {
+    width:  clamp(72px, 18vw, 96px);
+    height: clamp(44px, 10vw, 56px);
+    border: none;
+    border-radius: 10px;
+    background: #444;
+    color: white;
+    font-weight: bold;
+    font-size: clamp(11px, 2.5vw, 14px);
+    letter-spacing: 1px;
+    box-shadow: 0 3px 0 #222;
+    cursor: pointer;
+    pointer-events: all;
+    min-width: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
+}
+.btn:active  { transform: translateY(3px); box-shadow: none; }
+.btn-boost   { background: #e67e00; box-shadow: 0 3px 0 #a05000; }
+.btn-switch  { background: #0055aa; box-shadow: 0 3px 0 #003377; }
 .mobile-btn-group {
     display: flex;
     flex-direction: column;
