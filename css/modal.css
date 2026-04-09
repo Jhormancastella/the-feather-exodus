@@ -347,3 +347,220 @@
         border-color: rgba(255,255,255,0.8);
     }
 }
+
+/* ── MODO HISTORIA ────────────────────────────────────────────── */
+.story-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.97);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 500;
+    font-family: 'Courier New', monospace;
+    animation: modalFadeIn 0.3s ease;
+}
+.story-overlay.story-fade-out {
+    animation: storyFadeOut 0.35s ease forwards;
+}
+@keyframes storyFadeOut {
+    to { opacity: 0; transform: scale(1.03); }
+}
+
+.story-box {
+    background: #000;
+    border: 3px solid #00e5cc;
+    width: 90%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 229, 204, 0.25);
+}
+
+/* Barra de progreso */
+.story-progress-bar {
+    height: 4px;
+    background: #111;
+    width: 100%;
+}
+.story-progress-fill {
+    height: 100%;
+    background: #00e5cc;
+    transition: width 0.35s ease;
+}
+
+/* Slide de historia */
+.story-slide {
+    padding: 36px 32px 28px;
+    text-align: center;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    animation: storySlideIn 0.25s ease;
+}
+@keyframes storySlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.story-slide-icon {
+    font-size: 52px;
+    line-height: 1;
+    filter: drop-shadow(0 0 12px rgba(255,200,0,0.5));
+}
+
+.story-slide-text {
+    color: #ddd;
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 1px;
+    white-space: pre-line;
+    max-width: 400px;
+}
+
+.story-slide-title {
+    color: #ffcc00;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-shadow: 0 0 8px #ff8800;
+    margin-bottom: 4px;
+}
+
+/* Slide de controles */
+.story-slide-controls {
+    gap: 12px;
+}
+
+.story-controls-block {
+    width: 100%;
+}
+
+.story-ctrl-title {
+    color: #00e5cc;
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+    text-shadow: 0 0 6px #00e5cc;
+}
+
+.story-ctrl-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+}
+
+.story-ctrl-item {
+    background: #0a0a0a;
+    border: 1px solid #222;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.story-ctrl-key {
+    background: #1a1a1a;
+    border: 2px solid #555;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 4px 8px;
+    font-family: 'Courier New', monospace;
+}
+
+.story-ctrl-icon {
+    font-size: 22px;
+}
+
+/* Navegación */
+.story-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-top: 2px solid #111;
+    background: #050505;
+}
+
+.story-dots {
+    display: flex;
+    gap: 6px;
+}
+.story-dot {
+    width: 8px;
+    height: 8px;
+    background: #333;
+    border: 1px solid #555;
+    transition: background 0.2s;
+}
+.story-dot.active {
+    background: #00e5cc;
+    border-color: #00e5cc;
+    box-shadow: 0 0 6px #00e5cc;
+}
+
+.story-btn {
+    background: transparent;
+    border: 2px solid #444;
+    color: #888;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 80px;
+    min-height: 40px;
+}
+.story-btn:hover { border-color: #fff; color: #fff; }
+
+.story-btn-next,
+.story-btn-play {
+    border-color: #00e5cc;
+    color: #00e5cc;
+}
+.story-btn-next:hover,
+.story-btn-play:hover {
+    background: #00e5cc;
+    color: #000;
+}
+
+.story-btn-play {
+    border-color: #ffcc00;
+    color: #ffcc00;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+.story-btn-play:hover {
+    background: #ffcc00;
+    color: #000;
+    box-shadow: 0 0 12px rgba(255,200,0,0.4);
+}
+
+.story-btn-skip {
+    border-color: #333;
+    color: #555;
+    font-size: 11px;
+}
+.story-btn-skip:hover { border-color: #888; color: #888; }
+
+@media (max-width: 480px) {
+    .story-slide { padding: 24px 20px 20px; min-height: 180px; }
+    .story-slide-icon { font-size: 40px; }
+    .story-slide-text { font-size: 12px; }
+    .story-ctrl-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .story-btn { font-size: 11px; padding: 7px 10px; min-width: 64px; }
+}

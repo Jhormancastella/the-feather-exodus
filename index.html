@@ -25,12 +25,17 @@
             <span class="nes-title-line" id="menu-title-2">EXODUS</span>
         </div>
         <div class="nes-selector" id="nes-menu">
-            <div class="nes-option" id="btn-continue"><span class="arrow">&#9658;</span>CONTINUAR</div>
-            <div class="nes-option" id="btn-newgame"><span class="arrow">&#9658;</span>NUEVA PARTIDA</div>
+            <div class="nes-option" id="btn-start"><span class="arrow">&#9658;</span>INICIAR</div>
             <div class="nes-option" id="btn-gallery"><span class="arrow">&#9658;</span>GALERIA</div>
             <div class="nes-option" id="btn-options"><span class="arrow">&#9658;</span>OPCIONES</div>
             <div class="nes-option" id="btn-credits"><span class="arrow">&#9658;</span>CREDITOS</div>
             <div class="nes-option" id="btn-exit"><span class="arrow">&#9658;</span>SALIR</div>
+        </div>
+        <!-- Submenú INICIAR (oculto por defecto) -->
+        <div class="nes-selector nes-submenu" id="nes-submenu-start" style="display:none;">
+            <div class="nes-option" id="btn-continue"><span class="arrow">&#9658;</span>CONTINUAR</div>
+            <div class="nes-option" id="btn-newgame"><span class="arrow">&#9658;</span>NUEVA PARTIDA</div>
+            <div class="nes-option" id="btn-back"><span class="arrow">&#9658;</span>ATRÁS</div>
         </div>
         <div class="nes-topscore" id="menu-topscore">TOP SCORE = 0</div>
         <div class="nes-copyright">&#169;2026 FEATHER EXODUS/éxodo de plumas</div>
@@ -142,6 +147,7 @@
 <script src="js/controls.js"></script>
 <script src="js/skycycle.js"></script>
 <script src="js/game.js"></script>
+<script src="js/story.js"></script>
 <script src="js/menu.js"></script>
 </body>
 </html>

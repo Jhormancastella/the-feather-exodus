@@ -1,4 +1,7 @@
-/* --- MENÚ PRINCIPAL ESTILO NES --- */
+.nes-submenu {
+    animation: modalFadeIn 0.15s ease;
+}
+
 #main-menu {
     position: absolute;
     top: 0; left: 0;

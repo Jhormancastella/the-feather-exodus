@@ -6,8 +6,10 @@ const LANGS = {
         pageTitle: 'Feather Exodus - El Exodo de las Plumas',
 
         // ── Menú principal
+        menuStart:     'INICIAR',
         menuContinue:  'CONTINUAR',
         menuNewGame:   'NUEVA PARTIDA',
+        menuBack:      'ATRÁS',
         menuGallery:   'GALERIA',
         menuOptions:   'OPCIONES',
         menuCredits:   'CREDITOS',
@@ -114,13 +116,38 @@ const LANGS = {
 
         // ── Alertas
         alertNoSave:    'No hay partida guardada. Inicia una nueva.',
+
+        // ── Modo Historia
+        storySlide1: 'Cada otoño, miles de patos migratorios emprenden el gran éxodo.\nVuelan en bandada hacia tierras cálidas, guiados solo por el instinto y el viento.',
+        storySlide2: 'Pero este año, la ruta de migración cruza los territorios de caza.\nLos pantanos, los bosques y los cielos abiertos están llenos de peligro.',
+        storySlide3: 'Un cazador acecha en las sombras. Su perro olfatea el aire.\nCada disparo puede ser el último para la bandada.',
+        storySlide4: 'Tú eres uno de ellos. Guía a tus compañeros.\nEsquiva las balas, usa el boost para escapar y lleva a la bandada al otro lado.',
+        storySlide5: '¡La migración depende de ti!\nSobrevive a todos los niveles y completa el éxodo de las plumas.',
+
+        storyControlsHeader: '¿Cómo jugar?',
+        storyControlsTitle:  'CONTROLES',
+        storyCtrlMoveD:      'Mover el pato',
+        storyCtrlSwitchD:    'Cambiar de pato',
+        storyCtrlBoostD:     'Boost de velocidad',
+        storyCtrlPauseD:     'Pausar',
+        storyCtrlMoveM:      'Joystick — Mover',
+        storyCtrlSwitchM:    'Botón CAMBIAR',
+        storyCtrlBoostM:     'Botón BOOST',
+        storyCtrlPauseM:     'Botón PAUSA',
+
+        storyNext:  'SIGUIENTE',
+        storyBack:  'ATRÁS',
+        storySkip:  'SALTAR',
+        storyPlay:  'JUGAR',
     },
 
     en: {
         pageTitle: 'Feather Exodus - The Feather Exodus',
 
+        menuStart:     'START',
         menuContinue:  'CONTINUE',
         menuNewGame:   'NEW GAME',
+        menuBack:      'BACK',
         menuGallery:   'GALLERY',
         menuOptions:   'OPTIONS',
         menuCredits:   'CREDITS',
@@ -217,6 +244,29 @@ const LANGS = {
         pauseMainMenu:  'MAIN MENU',
 
         alertNoSave:    'No saved game found. Start a new one.',
+
+        // ── Story Mode
+        storySlide1: 'Every autumn, thousands of migratory ducks begin the great exodus.\nThey fly in flocks toward warmer lands, guided only by instinct and wind.',
+        storySlide2: 'But this year, the migration route crosses hunting territories.\nSwamps, forests and open skies are full of danger.',
+        storySlide3: 'A hunter lurks in the shadows. His dog sniffs the air.\nEvery shot could be the last for the flock.',
+        storySlide4: 'You are one of them. Lead your companions.\nDodge the bullets, use boost to escape and guide the flock to safety.',
+        storySlide5: 'The migration depends on you!\nSurvive all levels and complete the feather exodus.',
+
+        storyControlsHeader: 'How to play?',
+        storyControlsTitle:  'CONTROLS',
+        storyCtrlMoveD:      'Move the duck',
+        storyCtrlSwitchD:    'Switch duck',
+        storyCtrlBoostD:     'Speed boost',
+        storyCtrlPauseD:     'Pause',
+        storyCtrlMoveM:      'Joystick — Move',
+        storyCtrlSwitchM:    'SWITCH button',
+        storyCtrlBoostM:     'BOOST button',
+        storyCtrlPauseM:     'PAUSE button',
+
+        storyNext:  'NEXT',
+        storyBack:  'BACK',
+        storySkip:  'SKIP',
+        storyPlay:  'PLAY',
     }
 };
 
@@ -245,12 +295,14 @@ function _applyLangToDOM() {
     _setTextDirect('#menu-title-2', t('menuTitleLine2'));
 
     // Menú principal
-    _setText('btn-continue',  t('menuContinue'));
-    _setText('btn-newgame',   t('menuNewGame'));
-    _setText('btn-gallery',   t('menuGallery'));
-    _setText('btn-options',   t('menuOptions'));
-    _setText('btn-credits',   t('menuCredits'));
-    _setText('btn-exit',      t('menuExit'));
+    _setText('btn-start',    t('menuStart'));
+    _setText('btn-continue', t('menuContinue'));
+    _setText('btn-newgame',  t('menuNewGame'));
+    _setText('btn-back',     t('menuBack'));
+    _setText('btn-gallery',  t('menuGallery'));
+    _setText('btn-options',  t('menuOptions'));
+    _setText('btn-credits',  t('menuCredits'));
+    _setText('btn-exit',     t('menuExit'));
     _setTextDirect('.nes-copyright', t('menuCopyright'));
 
     // HUD labels

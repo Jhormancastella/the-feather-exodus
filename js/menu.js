@@ -474,28 +474,66 @@ function resumeGame() {
 
 // ── Selector NES con teclado ──────────────────────────────────────
 function initMenuSelector() {
-    const allOptions = Array.from(document.querySelectorAll('#nes-menu .nes-option'));
-    const options    = allOptions.filter(o => o.style.pointerEvents !== 'none');
-    let selIdx = 0;
+    // Navegación del menú principal
+    _initSelectorFor('#nes-menu');
+}
 
-    function updateSel() {
-        allOptions.forEach(o => o.classList.remove('selected'));
-        options[selIdx].classList.add('selected');
-    }
-    updateSel();
+/** Activa navegación ↑↓ Enter en un selector NES dado */
+function _initSelectorFor(containerSelector) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+    const opts = Array.from(container.querySelectorAll('.nes-option'))
+        .filter(o => o.style.pointerEvents !== 'none');
+    if (!opts.length) return;
 
-    window.addEventListener('keydown', e => {
+    let idx = 0;
+    opts.forEach(o => o.classList.remove('selected'));
+    opts[0].classList.add('selected');
+
+    const onKey = e => {
+        // Solo actuar si este contenedor está visible
+        if (container.style.display === 'none') return;
         if (DOM.mainMenu.style.display === 'none') return;
-        if (e.key === 'ArrowDown') { selIdx = (selIdx + 1) % options.length; updateSel(); e.preventDefault(); }
-        if (e.key === 'ArrowUp')   { selIdx = (selIdx - 1 + options.length) % options.length; updateSel(); e.preventDefault(); }
-        if (e.key === 'Enter')     { options[selIdx].click(); }
-    });
+        if (e.key === 'ArrowDown') {
+            opts[idx].classList.remove('selected');
+            idx = (idx + 1) % opts.length;
+            opts[idx].classList.add('selected');
+            e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+            opts[idx].classList.remove('selected');
+            idx = (idx - 1 + opts.length) % opts.length;
+            opts[idx].classList.add('selected');
+            e.preventDefault();
+        } else if (e.key === 'Enter') {
+            opts[idx].click();
+        } else if (e.key === 'Escape' || e.key === 'Backspace') {
+            // ESC en submenú vuelve al menú principal
+            if (containerSelector === '#nes-submenu-start') _showMainMenu();
+        }
+    };
+    window.addEventListener('keydown', onKey);
+}
+
+/** Muestra el menú principal y oculta el submenú */
+function _showMainMenu() {
+    document.getElementById('nes-menu').style.display          = '';
+    document.getElementById('nes-submenu-start').style.display = 'none';
+}
+
+/** Muestra el submenú INICIAR y oculta el menú principal */
+function _showStartSubmenu() {
+    document.getElementById('nes-menu').style.display          = 'none';
+    document.getElementById('nes-submenu-start').style.display = '';
+    // Resetear selección al primer ítem visible del submenú
+    const opts = Array.from(document.querySelectorAll('#nes-submenu-start .nes-option'))
+        .filter(o => o.style.pointerEvents !== 'none');
+    opts.forEach(o => o.classList.remove('selected'));
+    if (opts[0]) opts[0].classList.add('selected');
 }
 
 // ── Inicialización ────────────────────────────────────────────────
 function initMenu() {
     loadGameProgress();
-    // Idioma: siempre español si no hay preferencia guardada
     currentLang = state.settings.language || 'es';
     state.settings.language = currentLang;
     document.body.style.imageRendering =
@@ -503,24 +541,29 @@ function initMenu() {
 
     DOM.menuTopscore.textContent = `TOP SCORE = ${getTopScore()}`;
 
+    // Deshabilitar CONTINUAR si no hay guardado
     if (!hasSaveData()) {
         const btnCont = document.getElementById('btn-continue');
         btnCont.style.opacity       = '0.35';
         btnCont.style.pointerEvents = 'none';
     }
 
-    document.getElementById('btn-continue').onclick = () => continueGame();
-    document.getElementById('btn-newgame').onclick  = () => newGame();
-    document.getElementById('btn-gallery').onclick  = () => showGallery();
-    document.getElementById('btn-options').onclick  = () => showOptions();
-    document.getElementById('btn-credits').onclick  = () => showCredits();
-    document.getElementById('btn-exit').onclick     = () => {
+    // Menú principal
+    document.getElementById('btn-start').onclick   = () => _showStartSubmenu();
+    document.getElementById('btn-gallery').onclick = () => showGallery();
+    document.getElementById('btn-options').onclick = () => showOptions();
+    document.getElementById('btn-credits').onclick = () => showCredits();
+    document.getElementById('btn-exit').onclick    = () => {
         const ok = window.confirm('¿Salir del juego?');
         if (ok) { window.close(); history.back(); }
     };
 
+    // Submenú INICIAR
+    document.getElementById('btn-continue').onclick = () => continueGame();
+    document.getElementById('btn-newgame').onclick  = () => showStoryScreen(() => newGame());
+    document.getElementById('btn-back').onclick     = () => _showMainMenu();
+
     window.addEventListener('keydown', e => {
-        // P o Escape pausan — solo si el juego está activo y no hay modal abierto
         if ((e.key === 'Escape' || e.key.toLowerCase() === 'p')
             && state.game.active
             && !document.querySelector('.modal')) {
@@ -528,12 +571,11 @@ function initMenu() {
         }
     });
 
-    // Aplicar idioma al DOM inicial
     _applyLangToDOM();
     initMenuSelector();
+    _initSelectorFor('#nes-submenu-start');
     initControls();
-    // Iniciar música del menú — primer click del usuario la activa
-    document.addEventListener('click', () => playMenuMusic(), { once: true });
+    document.addEventListener('click',   () => playMenuMusic(), { once: true });
     document.addEventListener('keydown', () => playMenuMusic(), { once: true });
 }
 
