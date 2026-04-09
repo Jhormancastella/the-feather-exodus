@@ -14,9 +14,21 @@ function _createModal(title) {
         </div>
     `;
     modal.querySelector('.modal-close-x').onclick = () => modal.remove();
-    // Cerrar con ESC
-    const onKey = e => { if (e.key === 'Escape') { modal.remove(); window.removeEventListener('keydown', onKey); } };
+    // Cerrar con ESC — se limpia automáticamente al remover el modal
+    const onKey = e => {
+        if (e.key === 'Escape') {
+            modal.remove();
+            window.removeEventListener('keydown', onKey);
+        }
+    };
     window.addEventListener('keydown', onKey);
+    // Garantizar limpieza si el modal se elimina por otra vía
+    new MutationObserver((_, obs) => {
+        if (!document.body.contains(modal)) {
+            window.removeEventListener('keydown', onKey);
+            obs.disconnect();
+        }
+    }).observe(document.body, { childList: true, subtree: false });
     return modal;
 }
 
@@ -206,7 +218,6 @@ function _startCreditsDucks(modal) {
     function draw() {
         if (!document.body.contains(canvas)) { cancelAnimationFrame(rafId); return; }
         ctx.clearRect(0, 0, W, H);
-
         ducks.forEach((d, i) => {
             if (d.delay > 0) { d.delay--; return; }
 
@@ -281,7 +292,11 @@ function _startCreditsDucks(modal) {
 function showPause() {
     if (!state.game.active) return;
     state.game.active = false;
+    // Pausar loop Y intervals para que el score no siga sumando
     cancelAnimationFrame(state.animationId);
+    state.animationId = null;
+    stopSpriteInterval();
+    stopScoreInterval();
 
     const modal = _createModal(t('modalPause'));
     modal.querySelector('.modal-close-x').onclick = () => { modal.remove(); resumeGame(); };
@@ -329,6 +344,8 @@ function resumeGame() {
     state.game.active = true;
     lastTimestamp = 0;
     state.animationId = requestAnimationFrame(gameLoop);
+    startSpriteInterval();
+    startScoreInterval();
 }
 
 // ── Selector NES con teclado ──────────────────────────────────────

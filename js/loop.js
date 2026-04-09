@@ -53,6 +53,15 @@ function stopLoop() {
         cancelAnimationFrame(state.animationId);
         state.animationId = null;
     }
+    // Limpiar intervals de caída de patos huérfanos
+    state.game.ducks.forEach(d => {
+        if (d.fallInterval) { clearInterval(d.fallInterval); d.fallInterval = null; }
+    });
+    // Limpiar crosshair del cazador si quedó visible
+    if (state.crosshairElement) {
+        state.crosshairElement.remove();
+        state.crosshairElement = null;
+    }
     stopSpriteInterval();
     stopScoreInterval();
 }

@@ -255,8 +255,8 @@ function _applyLangToDOM() {
     _setTextDirect('#screen-over h1',           t('gameOverTitle'));
     _setTextDirect('#restart-btn',              t('btnRetry'));
 
-    // Control indicator (si está visible)
-    updateControlIndicator();
+    // Control indicator — solo si el juego está activo
+    if (state.game && state.game.active) updateControlIndicator();
 }
 
 // Helpers internos

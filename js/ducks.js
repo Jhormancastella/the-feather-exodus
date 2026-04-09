@@ -107,11 +107,13 @@ function killDuck(duck) {
     duck.el.style.transform = 'none';
 
     let fallY = duck.y;
-    const interval = setInterval(() => {
+    // Guardar referencia al interval en el propio pato para poder cancelarlo
+    duck.fallInterval = setInterval(() => {
         fallY += 4;
         duck.el.style.top = fallY + 'px';
         if (fallY > DOM.gameContainer.offsetHeight) {
-            clearInterval(interval);
+            clearInterval(duck.fallInterval);
+            duck.fallInterval = null;
             duck.el.style.display = 'none';
         }
     }, 20);

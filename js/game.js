@@ -41,11 +41,12 @@ function continueGame() {
     }
     stopLoop();
     state.game.ducks.forEach(d => d.el && d.el.remove());
-    state.game.active       = true;
+    state.game.active        = true;
     state.game.transitioning = false;
-    state.game.ducks        = [];
-    state.game.hunter       = { phase: 'IDLE', timer: 0, ammo: 3, targetIdx: -1, crosshairX: 0, crosshairY: 0 };
-    state.game.keys         = {};
+    state.game.ducks         = [];
+    state.game.boost         = 100;   // fix: boost no se reseteaba
+    state.game.hunter        = { phase: 'IDLE', timer: 0, ammo: 3, targetIdx: -1, crosshairX: 0, crosshairY: 0 };
+    state.game.keys          = {};
 
     _startGameSession();
 }

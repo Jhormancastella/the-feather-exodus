@@ -1,10 +1,10 @@
 // --- CONTROLES: TECLADO Y JOYSTICK TÁCTIL ---
 
 function initControls() {
-    // Teclado
+    // Teclado — Tab solo actúa si el juego está activo
     window.addEventListener('keydown', e => {
         state.game.keys[e.key.toLowerCase()] = true;
-        if (e.key === 'Tab') { e.preventDefault(); switchToNextDuck(); }
+        if (e.key === 'Tab' && state.game.active) { e.preventDefault(); switchToNextDuck(); }
         if (e.key === ' ')   e.preventDefault();
     });
     window.addEventListener('keyup', e => {
