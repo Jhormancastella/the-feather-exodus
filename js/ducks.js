@@ -29,7 +29,10 @@ function updatePhysics() {
     const joy = state.joystick;
     const limitW   = DOM.gameContainer.offsetWidth  - SW;
     const limitH   = DOM.gameContainer.offsetHeight - SH;
-    const groundY  = limitH - 70;
+    // En móvil reservar espacio para los controles táctiles
+    const mobileCtrl = document.getElementById('mobile-controls');
+    const ctrlH = (mobileCtrl && mobileCtrl.offsetHeight > 0) ? mobileCtrl.offsetHeight : 0;
+    const groundY  = limitH - Math.max(70, ctrlH + 10);
     const ceilingY = 70;
 
     g.ducks.forEach((duck, idx) => {

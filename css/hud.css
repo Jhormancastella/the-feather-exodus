@@ -82,23 +82,22 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    /* Altura proporcional a la pantalla */
-    height: clamp(110px, 22vh, 160px);
+    height: clamp(110px, 22vh, 150px);
     display: none;
-    padding: 0 clamp(10px, 3vw, 24px);
-    padding-bottom: clamp(8px, 2vh, 16px);
+    padding: clamp(6px, 1.5vh, 12px) clamp(10px, 3vw, 24px);
+    padding-bottom: max(clamp(8px, 2vh, 14px), env(safe-area-inset-bottom, 0px));
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     z-index: 100;
-    /* Fondo semitransparente para que no tape el juego */
-    background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 100%);
-    pointer-events: none; /* el contenedor no bloquea toques */
+    background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 100%);
+    pointer-events: none;
+    box-sizing: border-box;
 }
 
 /* Joystick */
 #joystick {
-    width:  clamp(80px, 18vw, 120px);
-    height: clamp(80px, 18vw, 120px);
+    width:  clamp(76px, 17vw, 110px);
+    height: clamp(76px, 17vw, 110px);
     background: rgba(255,255,255,0.12);
     border: 2px solid rgba(255,255,255,0.35);
     border-radius: 50%;
@@ -108,8 +107,8 @@
 }
 
 #joy-knob {
-    width:  clamp(30px, 7vw, 46px);
-    height: clamp(30px, 7vw, 46px);
+    width:  clamp(28px, 6.5vw, 42px);
+    height: clamp(28px, 6.5vw, 42px);
     background: rgba(255,255,255,0.9);
     border-radius: 50%;
     position: absolute;
@@ -122,31 +121,32 @@
 .mobile-btn-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5vh, 12px);
+    gap: clamp(5px, 1.2vh, 10px);
     align-items: flex-end;
     pointer-events: all;
+    flex-shrink: 0;
 }
 
 .btn {
-    width:  clamp(64px, 16vw, 90px);
-    height: clamp(40px, 9vw, 56px);
+    width:  clamp(68px, 17vw, 88px);
+    height: clamp(38px, 8.5vw, 52px);
     border: none;
     border-radius: 10px;
     background: #444;
     color: white;
     font-weight: bold;
-    font-size: clamp(10px, 2.2vw, 14px);
+    font-size: clamp(10px, 2.2vw, 13px);
     letter-spacing: 1px;
-    box-shadow: 0 4px 0 #222;
+    box-shadow: 0 3px 0 #222;
     cursor: pointer;
     pointer-events: all;
-    /* Área táctil mínima recomendada */
     min-width: 44px;
     min-height: 44px;
+    box-sizing: border-box;
 }
 .btn:active  { transform: translateY(3px); box-shadow: none; }
-.btn-boost   { background: #e67e00; box-shadow: 0 4px 0 #a05000; }
-.btn-switch  { background: #0055aa; box-shadow: 0 4px 0 #003377; }
+.btn-boost   { background: #e67e00; box-shadow: 0 3px 0 #a05000; }
+.btn-switch  { background: #0055aa; box-shadow: 0 3px 0 #003377; }
 
 /* ── HINT ESCRITORIO ─────────────────────────────────────────── */
 #desktop-hint {
@@ -231,10 +231,11 @@
 /* Pantalla muy alta (landscape móvil) */
 @media (max-height: 420px) and (max-width: 900px) {
     #mobile-controls {
-        height: 90px;
-        padding-bottom: 4px;
+        height: 80px;
+        padding: 4px clamp(10px, 3vw, 20px);
     }
-    #joystick { width: 70px; height: 70px; }
-    #joy-knob { width: 26px; height: 26px; }
-    .btn      { height: 36px; font-size: 9px; }
+    #joystick { width: 66px; height: 66px; }
+    #joy-knob { width: 24px; height: 24px; }
+    .btn      { height: 34px; min-height: 34px; font-size: 9px; width: 60px; }
+    .mobile-btn-group { gap: 4px; }
 }
