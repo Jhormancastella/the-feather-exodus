@@ -514,7 +514,10 @@ function initMenu() {
     document.getElementById('btn-gallery').onclick  = () => showGallery();
     document.getElementById('btn-options').onclick  = () => showOptions();
     document.getElementById('btn-credits').onclick  = () => showCredits();
-    document.getElementById('btn-exit').onclick     = () => window.close();
+    document.getElementById('btn-exit').onclick     = () => {
+        const ok = window.confirm('¿Salir del juego?');
+        if (ok) { window.close(); history.back(); }
+    };
 
     window.addEventListener('keydown', e => {
         // P o Escape pausan — solo si el juego está activo y no hay modal abierto
