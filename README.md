@@ -16,7 +16,7 @@
 <div align="center">
 
 ### Menú Principal
-![Menú Principal](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775752001/1_kkaikg.jpg)
+![Menú Principal](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775752001/2_gn766y.jpg)
 
 ### Gameplay
 ![Gameplay](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775752001/1_kkaikg.jpg)
