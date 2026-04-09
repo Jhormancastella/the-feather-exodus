@@ -16,10 +16,10 @@
 <div align="center">
 
 ### Menú Principal
-![Menú Principal](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/output_8mbudp_cxsljf.png)
+![Menú Principal](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775752001/1_kkaikg.jpg)
 
-### Gameplay — Atardecer
-![Gameplay atardecer](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/1775745877_wf7810.png)
+### Gameplay
+![Gameplay](https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775752001/1_kkaikg.jpg)
 
 </div>
 
