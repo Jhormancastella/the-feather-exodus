@@ -19,7 +19,14 @@ function loadLevel(levelIndex) {
 
     updateHUD();
     updateControlIndicator();
-    if (levelIndex > 0) showLevelScreen(levelIndex);
+    applySky(levelIndex);
+    if (levelIndex > 0) {
+        showLevelScreen(levelIndex);
+        playSound('nextRound');
+    } else {
+        // Nivel 1 — perro ladra al inicio
+        playSound('dog');
+    }
     updateUnlocksByLevel(levelIndex);
     saveGameProgress();
 }
@@ -52,6 +59,7 @@ function continueGame() {
 }
 
 function _startGameSession() {
+    stopMenuMusic();   // detener música del menú con fade out
     loadLevel(state.game.level);
     DOM.gameContainer.style.display = 'block';
     DOM.mainMenu.style.display      = 'none';
@@ -59,6 +67,7 @@ function _startGameSession() {
     state.animationId = requestAnimationFrame(gameLoop);
     startSpriteInterval();
     startScoreInterval();
+    startPowerupSystem();
 }
 
 function startTransition() {
@@ -83,6 +92,9 @@ function checkTransitionEnd() {
 function endGame() {
     state.game.active = false;
     stopLoop();
+    stopPowerupSystem();
+    _stopStorm();
+    playSound('lose');
     showGameOverScreen();
     saveGameProgress();
 }

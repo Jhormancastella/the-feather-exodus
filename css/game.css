@@ -1,8 +1,8 @@
 /* --- ELEMENTOS DEL JUEGO --- */
 .duck {
     position: absolute;
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     background-image: url('https://i0.wp.com/github.com/elpsk/Unity3D-Nintentdo_Duck_Hunt/raw/master/Assets/Resources/duckhunt_various_sheet.png?ssl=1');
     background-repeat: no-repeat;
     background-size: auto;
@@ -86,4 +86,74 @@
     width: 2px;
     background: rgba(255,255,0,0.5);
     z-index: 45;
+}
+
+/* ── POWER-UPS ──────────────────────────────────────────────────── */
+.powerup {
+    position: absolute;
+    font-size: 22px;
+    z-index: 30;
+    cursor: default;
+    filter: drop-shadow(0 0 6px var(--pu-color, #fff));
+    animation: puFloat 2s ease-in-out infinite, puAppear 0.3s ease forwards;
+    transform-origin: center;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.powerup-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+@keyframes puFloat {
+    0%,100% { transform: translateY(0)   rotate(-5deg); }
+    50%      { transform: translateY(-8px) rotate(5deg);  }
+}
+
+@keyframes puAppear {
+    from { opacity: 0; transform: scale(0.3); }
+    to   { opacity: 1; transform: scale(1);   }
+}
+
+.powerup-collect {
+    animation: puCollect 0.4s ease forwards !important;
+}
+@keyframes puCollect {
+    0%   { transform: scale(1);   opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Texto flotante al recoger */
+.powerup-float {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    pointer-events: none;
+    z-index: 60;
+    text-shadow: 1px 1px 0 #000;
+    animation: pfloat 0.8s ease forwards;
+}
+@keyframes pfloat {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-40px); }
+}
+
+/* Pato con escudo activo */
+.duck-shielded {
+    filter: brightness(1.4) drop-shadow(0 0 8px #00aaff) !important;
+}
+.duck-shielded::before {
+    content: '🛡️';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
 }

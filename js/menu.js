@@ -1,7 +1,8 @@
 // --- MENÚ PRINCIPAL, MODALES Y ARRANQUE ---
 
 // ── Helper: crear modal con barra de título estilo NES ────────────
-function _createModal(title) {
+// onClose: callback opcional que se ejecuta al cerrar (X o ESC)
+function _createModal(title, onClose = null) {
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
@@ -13,22 +14,28 @@ function _createModal(title) {
             <div class="modal-body"></div>
         </div>
     `;
-    modal.querySelector('.modal-close-x').onclick = () => modal.remove();
-    // Cerrar con ESC — se limpia automáticamente al remover el modal
+
+    const doClose = () => {
+        modal.remove();
+        window.removeEventListener('keydown', onKey);
+        if (onClose) onClose();
+    };
+
+    modal.querySelector('.modal-close-x').onclick = doClose;
+
     const onKey = e => {
-        if (e.key === 'Escape') {
-            modal.remove();
-            window.removeEventListener('keydown', onKey);
-        }
+        if (e.key === 'Escape' && document.body.contains(modal)) doClose();
     };
     window.addEventListener('keydown', onKey);
-    // Garantizar limpieza si el modal se elimina por otra vía
+
+    // Limpiar listener si el modal se elimina por otra vía
     new MutationObserver((_, obs) => {
         if (!document.body.contains(modal)) {
             window.removeEventListener('keydown', onKey);
             obs.disconnect();
         }
     }).observe(document.body, { childList: true, subtree: false });
+
     return modal;
 }
 
@@ -36,13 +43,38 @@ function _createModal(title) {
 function showGallery() {
     const modal = _createModal(t('modalGallery'));
     const body  = modal.querySelector('.modal-body');
-    const IMG   = 'https://www.clipartmax.com/png/middle/428-4287261_duck-hunt-nintendo-sprite-clipart-png-download-duck-hunt-nintendo-sprite.png';
 
     const items = [
-        { id: 'level1', name: t('galleryLevel1'), desc: t('galleryDesc1') },
-        { id: 'level3', name: t('galleryLevel3'), desc: t('galleryDesc3') },
-        { id: 'level5', name: t('galleryLevel5'), desc: t('galleryDesc5') },
-        { id: 'level7', name: t('galleryLevel7'), desc: t('galleryDesc7') }
+        {
+            id: 'level1',
+            name: t('galleryLevel1'),
+            desc: t('galleryDesc1'),
+            img: 'https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/f2_rqusvm.png'
+        },
+        {
+            id: 'level3',
+            name: t('galleryLevel3'),
+            desc: t('galleryDesc3'),
+            img: 'https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/%C3%B1_xkmfgg.png'
+        },
+        {
+            id: 'level5',
+            name: t('galleryLevel5'),
+            desc: t('galleryDesc5'),
+            img: 'https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/1775745751_xrpe26.png'
+        },
+        {
+            id: 'level7',
+            name: t('galleryLevel7'),
+            desc: t('galleryDesc7'),
+            img: 'https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/1775745877_wf7810.png'
+        },
+        {
+            id: 'level9',
+            name: t('galleryLevel9'),
+            desc: t('galleryDesc9'),
+            img: 'https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/output_8mbudp_cxsljf.png'
+        }
     ];
 
     const grid = document.createElement('div');
@@ -52,7 +84,8 @@ function showGallery() {
         const div = document.createElement('div');
         div.className = `gallery-item ${unlocked ? 'unlocked' : ''}`;
         div.innerHTML = `
-            <img src="${IMG}" alt="${item.name}">
+            <img src="${unlocked ? item.img : ''}" alt="${item.name}"
+                 style="${unlocked ? '' : 'background:#111;'}">
             <p>${item.name}</p>
             <small>${unlocked ? t('galleryUnlocked') : t('galleryLocked')}</small>
         `;
@@ -63,10 +96,12 @@ function showGallery() {
 }
 
 // ── OPCIONES ──────────────────────────────────────────────────────
-function showOptions() {
-    const modal = _createModal(t('modalOptions'));
-    const body  = modal.querySelector('.modal-body');
-    const s     = state.settings;
+// fromPause: si es true, al cerrar/guardar vuelve a la pausa
+function showOptions(fromPause = false) {
+    const onClose = fromPause ? () => _showPauseMenu() : null;
+    const modal   = _createModal(t('modalOptions'), onClose);
+    const body    = modal.querySelector('.modal-body');
+    const s       = state.settings;
 
     body.innerHTML = `
         <div class="option-row">
@@ -109,12 +144,13 @@ function showOptions() {
         document.body.style.imageRendering = s.graphicsQuality === 'pixelated' ? 'pixelated' : 'auto';
         saveGameProgress();
         const btn = modal.querySelector('#opt-save');
-        btn.textContent = t('optSaved');
-        btn.style.color = '#0f0';
+        btn.textContent   = t('optSaved');
+        btn.style.color   = '#0f0';
         btn.style.borderColor = '#0f0';
         setTimeout(() => {
             modal.remove();
             if (newLang !== currentLang) setLang(newLang);
+            if (fromPause) _showPauseMenu();
         }, 500);
     };
 }
@@ -129,30 +165,71 @@ function showCredits() {
         <div class="credits-scene" id="credits-scene">
             <canvas id="credits-canvas"></canvas>
             <div class="credits-text-overlay">
-                <div class="c-title">${t('creditsTitle')}</div>
-                <div class="c-sub">${t('creditsSub')}</div>
+
+                <!-- Título bilingüe animado -->
+                <div class="c-title-wrap">
+                    <div class="c-title c-title-anim" id="credits-main-title">${t('creditsTitle1')}</div>
+                    <div class="c-title-divider"></div>
+                    <div class="c-sub">${t('creditsSub')}</div>
+                </div>
+
                 <div class="c-section">${t('creditsDev')}</div>
                 <div class="c-line">${t('creditsDevLine1')}</div>
-                <div class="c-line">${t('creditsDevLine2')}</div>
+                <div class="c-line c-highlight">${t('creditsDevLine2')}</div>
+
                 <div class="c-section">${t('creditsArt')}</div>
                 <div class="c-line">${t('creditsArtLine1')}</div>
                 <div class="c-line">${t('creditsArtLine2')}</div>
                 <div class="c-line">${t('creditsArtLine3')}</div>
+
                 <div class="c-section">${t('creditsTest')}</div>
                 <div class="c-special">${t('creditsTestSpc')}</div>
                 <div class="c-line">${t('creditsTestLine')}</div>
+
                 <div class="c-section">${t('creditsInsp')}</div>
                 <div class="c-line">${t('creditsInspLine1')}</div>
                 <div class="c-line">${t('creditsInspLine2')}</div>
+
                 <div class="c-section">${t('creditsTech')}</div>
                 <div class="c-line">${t('creditsTechLine1')}</div>
                 <div class="c-line">${t('creditsTechLine2')}</div>
+
+                <div class="c-section">${t('creditsRepo')}</div>
+                <div class="c-repo">
+                    <span class="c-repo-icon">⌥</span>
+                    <a class="c-repo-link" href="https://github.com/Jhormancastella/the-feather-exodus" target="_blank" rel="noopener">
+                        ${t('creditsRepoLine1')} / ${t('creditsRepoLine2')}
+                    </a>
+                </div>
+
+                <div class="c-version">${t('creditsVersion')}</div>
                 <div class="c-title c-end">${t('creditsThanks')}</div>
             </div>
         </div>
     `;
+
     document.body.appendChild(modal);
     _startCreditsDucks(modal);
+    _startCreditsTitleAnim(modal);
+}
+
+// Alterna el título entre ES e EN cada 2.5s
+function _startCreditsTitleAnim(modal) {
+    const el     = modal.querySelector('#credits-main-title');
+    if (!el) return;
+    const titles = [t('creditsTitle1'), t('creditsTitle2')];
+    // Si ambos son iguales (EN) no animar
+    if (titles[0] === titles[1]) return;
+    let idx = 0;
+    const iv = setInterval(() => {
+        if (!document.body.contains(el)) { clearInterval(iv); return; }
+        el.classList.add('c-title-fade');
+        setTimeout(() => {
+            idx = (idx + 1) % titles.length;
+            el.textContent = titles[idx];
+            el.classList.remove('c-title-fade');
+        }, 300);
+    }, 2500);
 }
 
 function _startCreditsDucks(modal) {
@@ -164,121 +241,128 @@ function _startCreditsDucks(modal) {
     canvas.height = H;
     const ctx = canvas.getContext('2d');
 
+    // Usar el mismo sheet y coordenadas que el juego
     const sheet = new Image();
+    sheet.crossOrigin = 'anonymous';
     sheet.src = 'https://i0.wp.com/github.com/elpsk/Unity3D-Nintentdo_Duck_Hunt/raw/master/Assets/Resources/duckhunt_various_sheet.png?ssl=1';
 
-    // Sprites del sheet: vuelo, caída
-    const TYPES = [
-        { fly: [{x:0,y:115},{x:36,y:115},{x:72,y:115}], fall: [{x:0,y:189},{x:36,y:189}] },
-        { fly: [{x:0,y:153},{x:36,y:153},{x:72,y:153}], fall: [{x:0,y:189},{x:36,y:189}] },
-        { fly: [{x:108,y:115},{x:144,y:115},{x:180,y:115}], fall: [{x:0,y:189},{x:36,y:189}] }
-    ];
-
-    // Estados posibles
+    // Tipos de pato usando las coordenadas exactas del config.js
+    const DUCK_TYPES = Object.keys(SPRITES); // ['black','red','brown']
     const STATES = ['flying', 'hit', 'falling'];
 
     function _makeDuck() {
-        const type  = TYPES[Math.floor(Math.random() * TYPES.length)];
-        const state = STATES[Math.floor(Math.random() * STATES.length)];
-        const dir   = Math.random() > 0.5 ? 1 : -1;
+        const typeName = DUCK_TYPES[Math.floor(Math.random() * DUCK_TYPES.length)];
+        const spr      = SPRITES[typeName];
+        const dstate   = STATES[Math.floor(Math.random() * STATES.length)];
+        const dir      = Math.random() > 0.5 ? 1 : -1;
 
-        // Patos cayendo empiezan desde arriba en X aleatorio
-        if (state === 'falling') {
+        if (dstate === 'falling') {
             return {
-                type, state,
-                x: 20 + Math.random() * (W - 40),
-                y: -40,
+                typeName, spr, state: dstate,
+                x: 20 + Math.random() * (W - 40), y: -40,
                 vx: (Math.random() - 0.5) * 1.2,
                 vy: 1.2 + Math.random() * 1.5,
                 dir: Math.random() > 0.5 ? 1 : -1,
-                frame: 0, timer: 0,
-                hitTimer: 0,
-                delay: Math.random() * 100,
-                alpha: 1
+                frame: 0, timer: 0, hitTimer: 0,
+                delay: Math.random() * 100, alpha: 1
             };
         }
-        // Patos volando entran por los lados
         return {
-            type, state,
+            typeName, spr, state: dstate,
             x:   dir === 1 ? -40 : W + 40,
             y:   20 + Math.random() * (H - 60),
             vx:  dir * (0.5 + Math.random() * 0.9),
             vy:  (Math.random() - 0.5) * 0.6,
-            dir,
-            frame: 0, timer: 0,
-            hitTimer: state === 'hit' ? 18 : 0,  // hit: parpadea N frames luego cae
-            delay: Math.random() * 120,
-            alpha: 1
+            dir, frame: 0, timer: 0,
+            hitTimer: dstate === 'hit' ? 18 : 0,
+            delay: Math.random() * 120, alpha: 1
         };
     }
 
     const ducks = Array.from({ length: 10 }, _makeDuck);
     let rafId;
 
+    function _drawDuck(d) {
+        // Elegir coordenada del sprite según estado
+        let coord;
+        if (d.state === 'falling' || d.state === 'hit') {
+            coord = d.spr.falling[d.frame % d.spr.falling.length];
+        } else {
+            coord = d.spr.fly[d.frame % d.spr.fly.length];
+        }
+
+        // sprCoord devuelve {bx, by} — convertir a coordenadas del sheet
+        // bx = -sx + offset  →  sx = -bx + offset = -(bx - (SW-sw)/2)
+        // Más simple: recalcular desde config directamente
+        // Usamos las coords raw del análisis de píxeles
+        const RAW_FLY = {
+            black: [{x:0,y:119,w:34,h:28},{x:40,y:119,w:34,h:28},{x:81,y:119,w:32,h:28}],
+            red:   [{x:130,y:119,w:34,h:28},{x:170,y:119,w:34,h:28},{x:211,y:119,w:32,h:28}],
+            brown: [{x:260,y:119,w:34,h:28},{x:300,y:119,w:34,h:28},{x:341,y:119,w:32,h:28}]
+        };
+        const RAW_FALL = {
+            black: [{x:1,y:237,w:31,h:30},{x:48,y:237,w:18,h:30}],
+            red:   [{x:1,y:237,w:31,h:30},{x:48,y:237,w:18,h:30}],
+            brown: [{x:1,y:237,w:31,h:30},{x:48,y:237,w:18,h:30}]
+        };
+
+        let raw;
+        if (d.state === 'falling' || d.state === 'hit') {
+            raw = RAW_FALL[d.typeName][d.frame % 2];
+        } else {
+            raw = RAW_FLY[d.typeName][d.frame % 3];
+        }
+
+        ctx.save();
+        ctx.globalAlpha = d.alpha * 0.75;
+        ctx.translate(d.x + raw.w / 2, d.y + raw.h / 2);
+
+        if (d.state === 'falling') {
+            const rot = Math.min(Math.PI, (d.vy / 6) * Math.PI);
+            ctx.rotate(d.dir === 1 ? rot : -rot);
+        }
+        if (d.dir === -1 && d.state !== 'falling') ctx.scale(-1, 1);
+
+        // Dibujar a 2x
+        ctx.drawImage(sheet, raw.x, raw.y, raw.w, raw.h,
+                      -raw.w, -raw.h, raw.w * 2, raw.h * 2);
+        ctx.restore();
+    }
+
     function draw() {
         if (!document.body.contains(canvas)) { cancelAnimationFrame(rafId); return; }
         ctx.clearRect(0, 0, W, H);
+
         ducks.forEach((d, i) => {
             if (d.delay > 0) { d.delay--; return; }
-
             d.timer++;
 
-            // ── Lógica por estado ──────────────────────────────
             if (d.state === 'flying') {
                 d.x += d.vx;
                 d.y += d.vy;
-                if (d.y < 10 || d.y > H - 50) d.vy *= -1;
-                if (d.x > W + 50 || d.x < -50) ducks[i] = _makeDuck();
-
-                // Animar frames de vuelo cada 8 ticks
+                if (d.y < 10 || d.y > H - 58) d.vy *= -1;
+                if (d.x > W + 60 || d.x < -60) ducks[i] = _makeDuck();
                 if (d.timer % 8 === 0) d.frame = (d.frame + 1) % 3;
 
             } else if (d.state === 'hit') {
-                // Parpadea en su posición, luego pasa a falling
                 d.x += d.vx * 0.3;
                 d.alpha = d.timer % 4 < 2 ? 0.3 : 1;
                 d.hitTimer--;
                 if (d.hitTimer <= 0) {
-                    d.state  = 'falling';
-                    d.vy     = 1.5;
-                    d.vx     = (Math.random() - 0.5) * 1.5;
-                    d.alpha  = 1;
-                    d.frame  = 0;
-                    d.timer  = 0;
+                    d.state = 'falling'; d.vy = 1.5;
+                    d.vx = (Math.random() - 0.5) * 1.5;
+                    d.alpha = 1; d.frame = 0; d.timer = 0;
                 }
 
             } else if (d.state === 'falling') {
                 d.x  += d.vx;
                 d.y  += d.vy;
-                d.vy += 0.08;  // gravedad
-                // Rotar visualmente al caer (con transform en canvas)
+                d.vy += 0.08;
                 if (d.timer % 6 === 0) d.frame = (d.frame + 1) % 2;
                 if (d.y > H + 50) ducks[i] = _makeDuck();
             }
 
-            // ── Elegir sprite ──────────────────────────────────
-            let sp;
-            if (d.state === 'falling' || d.state === 'hit') {
-                sp = d.type.fall[d.frame % 2];
-            } else {
-                sp = d.type.fly[d.frame];
-            }
-
-            // ── Dibujar ────────────────────────────────────────
-            ctx.save();
-            ctx.globalAlpha = d.alpha * 0.7;
-            ctx.translate(d.x + 18, d.y + 18);
-
-            if (d.state === 'falling') {
-                // Rotar el pato al caer
-                const rot = Math.min(Math.PI, (d.vy / 6) * Math.PI);
-                ctx.rotate(d.dir === 1 ? rot : -rot);
-            }
-
-            if (d.dir === 1 && d.state !== 'falling') ctx.scale(-1, 1);
-
-            ctx.drawImage(sheet, sp.x, sp.y, 36, 36, -18, -18, 36, 36);
-            ctx.restore();
+            _drawDuck(d);
         });
 
         rafId = requestAnimationFrame(draw);
@@ -292,15 +376,18 @@ function _startCreditsDucks(modal) {
 function showPause() {
     if (!state.game.active) return;
     state.game.active = false;
-    // Pausar loop Y intervals para que el score no siga sumando
     cancelAnimationFrame(state.animationId);
     state.animationId = null;
     stopSpriteInterval();
     stopScoreInterval();
+    _showPauseMenu();
+}
 
-    const modal = _createModal(t('modalPause'));
-    modal.querySelector('.modal-close-x').onclick = () => { modal.remove(); resumeGame(); };
-    const body = modal.querySelector('.modal-body');
+// Construye el modal de pausa sin tocar el estado del juego
+function _showPauseMenu() {
+    // onClose del modal (X o ESC) → reanudar
+    const modal = _createModal(t('modalPause'), () => resumeGame());
+    const body  = modal.querySelector('.modal-body');
     body.style.padding = '0';
 
     body.innerHTML = `
@@ -319,25 +406,62 @@ function showPause() {
             </div>
         </div>
         <div class="pause-menu">
-            <div class="pause-opt" id="p-resume"><span class="p-arrow">►</span>${t('pauseResume')}</div>
-            <div class="pause-opt" id="p-options"><span class="p-arrow">►</span>${t('pauseOptions')}</div>
-            <div class="pause-opt" id="p-menu"><span class="p-arrow">►</span>${t('pauseMainMenu')}</div>
+            <div class="pause-opt" id="p-resume"  tabindex="0"><span class="p-arrow">►</span>${t('pauseResume')}</div>
+            <div class="pause-opt" id="p-options" tabindex="0"><span class="p-arrow">►</span>${t('pauseOptions')}</div>
+            <div class="pause-opt" id="p-menu"    tabindex="0"><span class="p-arrow">►</span>${t('pauseMainMenu')}</div>
         </div>
     `;
 
     document.body.appendChild(modal);
 
-    modal.querySelector('#p-resume').onclick = () => { modal.remove(); resumeGame(); };
-    modal.querySelector('#p-options').onclick = () => showOptions();
-    modal.querySelector('#p-menu').onclick = () => {
+    const resume  = modal.querySelector('#p-resume');
+    const options = modal.querySelector('#p-options');
+    const toMenu  = modal.querySelector('#p-menu');
+
+    resume.onclick  = () => { modal.remove(); resumeGame(); };
+    options.onclick = () => { modal.remove(); showOptions(true); };
+    toMenu.onclick  = () => {
         modal.remove();
         stopLoop();
+        stopPowerupSystem();
         state.game.ducks.forEach(d => d.el && d.el.remove());
         state.game.active = false;
         DOM.gameContainer.style.display = 'none';
         DOM.mainMenu.style.display      = 'flex';
         DOM.menuTopscore.textContent    = `TOP SCORE = ${getTopScore()}`;
+        playMenuMusic();
     };
+
+    // Navegación con teclado ↑↓ Enter P/ESC
+    const pauseOpts = [resume, options, toMenu];
+    let pauseIdx = 0;
+    pauseOpts[0].classList.add('selected');
+
+    const onPauseKey = e => {
+        if (!document.body.contains(modal)) {
+            window.removeEventListener('keydown', onPauseKey);
+            return;
+        }
+        if (e.key === 'ArrowDown') {
+            pauseOpts[pauseIdx].classList.remove('selected');
+            pauseIdx = (pauseIdx + 1) % pauseOpts.length;
+            pauseOpts[pauseIdx].classList.add('selected');
+            e.preventDefault();
+        } else if (e.key === 'ArrowUp') {
+            pauseOpts[pauseIdx].classList.remove('selected');
+            pauseIdx = (pauseIdx - 1 + pauseOpts.length) % pauseOpts.length;
+            pauseOpts[pauseIdx].classList.add('selected');
+            e.preventDefault();
+        } else if (e.key === 'Enter') {
+            pauseOpts[pauseIdx].click();
+        } else if (e.key.toLowerCase() === 'p') {
+            // P de nuevo reanuda
+            modal.remove();
+            resumeGame();
+            window.removeEventListener('keydown', onPauseKey);
+        }
+    };
+    window.addEventListener('keydown', onPauseKey);
 }
 
 function resumeGame() {
@@ -371,8 +495,9 @@ function initMenuSelector() {
 // ── Inicialización ────────────────────────────────────────────────
 function initMenu() {
     loadGameProgress();
-    // Aplicar idioma guardado
+    // Idioma: siempre español si no hay preferencia guardada
     currentLang = state.settings.language || 'es';
+    state.settings.language = currentLang;
     document.body.style.imageRendering =
         state.settings.graphicsQuality === 'pixelated' ? 'pixelated' : 'auto';
 
@@ -392,13 +517,21 @@ function initMenu() {
     document.getElementById('btn-exit').onclick     = () => window.close();
 
     window.addEventListener('keydown', e => {
-        if ((e.key === 'Escape' || e.key === 'p') && state.game.active) showPause();
+        // P o Escape pausan — solo si el juego está activo y no hay modal abierto
+        if ((e.key === 'Escape' || e.key.toLowerCase() === 'p')
+            && state.game.active
+            && !document.querySelector('.modal')) {
+            showPause();
+        }
     });
 
     // Aplicar idioma al DOM inicial
     _applyLangToDOM();
     initMenuSelector();
     initControls();
+    // Iniciar música del menú — primer click del usuario la activa
+    document.addEventListener('click', () => playMenuMusic(), { once: true });
+    document.addEventListener('keydown', () => playMenuMusic(), { once: true });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

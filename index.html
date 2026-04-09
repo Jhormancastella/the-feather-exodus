@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Feather Exodus - El Exodo de las Plumas</title>
-    <link rel="icon" type="image/png" href="https://www.clipartmax.com/png/middle/428-4287261_duck-hunt-nintendo-sprite-clipart-png-download-duck-hunt-nintendo-sprite.png">
+    <link rel="icon" type="image/png" href="img/pt.png">
 
     <!-- Estilos -->
     <link rel="stylesheet" href="css/global.css">
@@ -20,9 +20,9 @@
     <!-- Menú Principal estilo NES -->
     <div id="main-menu">
         <div class="nes-title-block">
-            <span class="nes-title-line">FEATHER</span>
+            <span class="nes-title-line" id="menu-title-1">FEATHER</span>
             <span class="nes-title-divider"></span>
-            <span class="nes-title-line">EXODUS</span>
+            <span class="nes-title-line" id="menu-title-2">EXODUS</span>
         </div>
         <div class="nes-selector" id="nes-menu">
             <div class="nes-option" id="btn-continue"><span class="arrow">&#9658;</span>CONTINUAR</div>
@@ -33,11 +33,15 @@
             <div class="nes-option" id="btn-exit"><span class="arrow">&#9658;</span>SALIR</div>
         </div>
         <div class="nes-topscore" id="menu-topscore">TOP SCORE = 0</div>
-        <div class="nes-copyright">&#169;2025 FEATHER EXODUS</div>
+        <div class="nes-copyright">&#169;2026 FEATHER EXODUS/éxodo de plumas</div>
     </div>
 
     <!-- Contenedor del juego -->
     <div id="game-container">
+
+        <!-- Efectos de tormenta -->
+        <div class="bg-lightning"></div>
+        <div class="bg-rain"></div>
 
         <!-- Fondo: sol, nubes, pájaros, montañas, pasto -->
         <div class="bg-sun"></div>
@@ -90,10 +94,10 @@
                 <span class="hud-label">CAZADOR</span>
                 <span class="hud-val" id="ui-hunter">***</span>
             </div>
+            <button id="pause-btn">II</button>
         </div>
 
         <div id="control-indicator">JUGADOR: PATO NEGRO</div>
-        <button id="pause-btn">II PAUSA</button>
 
         <div id="desktop-hint" style="position:absolute;bottom:10px;width:100%;text-align:center;color:#fff;font-size:12px;">
             WASD: Mover &nbsp;|&nbsp; TAB: Cambiar Pato &nbsp;|&nbsp; ESPACIO: Boost
@@ -128,11 +132,14 @@
 <script src="js/state.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/storage.js"></script>
+<script src="js/audio.js"></script>
 <script src="js/hud.js"></script>
 <script src="js/ducks.js"></script>
+<script src="js/powerups.js"></script>
 <script src="js/hunter.js"></script>
 <script src="js/loop.js"></script>
 <script src="js/controls.js"></script>
+<script src="js/skycycle.js"></script>
 <script src="js/game.js"></script>
 <script src="js/menu.js"></script>
 </body>

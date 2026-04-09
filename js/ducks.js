@@ -6,14 +6,22 @@ function spawnDuck(type) {
     el.innerHTML = '<div class="duck-health"><div class="duck-health-fill"></div></div>';
     DOM.gameContainer.appendChild(el);
 
-    state.game.ducks.push({
+    const duck = {
         el, type,
-        x: 50 + Math.random() * (DOM.gameContainer.offsetWidth - 100),
+        x: 50 + Math.random() * (DOM.gameContainer.offsetWidth  - 100),
         y: 100 + Math.random() * 200,
         vx: (Math.random() - 0.5) * 1.5,
         vy: (Math.random() - 0.5) * 1.5,
-        dir: 1, frame: 0, alive: true, health: 100, invincible: 0
-    });
+        dir: 1, frame: 0,
+        alive: true, health: 100, invincible: 0,
+        fallInterval: null
+    };
+    _applySprite(duck, SPRITES[type].fly[0]);
+    state.game.ducks.push(duck);
+}
+
+function _applySprite(duck, coord) {
+    duck.el.style.backgroundPosition = `${coord.bx}px ${coord.by}px`;
 }
 
 function updatePhysics() {
@@ -49,7 +57,11 @@ function updatePhysics() {
             if (ix !== 0 || iy !== 0) {
                 duck.vx = ix * speed;
                 duck.vy = iy * speed;
-                if (boosting) g.boost -= 0.5;
+                if (boosting) {
+                    g.boost -= 0.5;
+                    // Invencibilidad mientras dura el boost — el cazador no puede impactar
+                    duck.invincible = Math.max(duck.invincible, 1.5);
+                }
             }
             if (ix > 0) duck.dir =  1;
             if (ix < 0) duck.dir = -1;
@@ -86,37 +98,48 @@ function updateAllSprites() {
     state.game.ducks.forEach(duck => {
         if (!duck.alive) return;
         duck.frame = (duck.frame + 1) % 3;
-        const coords = SPRITES[duck.type][duck.frame];
-        duck.el.style.backgroundPosition = `-${coords.x}px -${coords.y}px`;
+        _applySprite(duck, SPRITES[duck.type].fly[duck.frame]);
     });
+}
+
+// Función utilitaria compartida para color de barra de vida
+function healthColor(hp) {
+    if (hp < 40) return 'red';
+    if (hp < 70) return 'orange';
+    return '#0f0';
 }
 
 function damageDuck(duck, amount) {
     duck.health -= amount;
     duck.invincible = 0.5;
     const fill = duck.el.querySelector('.duck-health-fill');
-    fill.style.width      = Math.max(0, duck.health) + '%';
-    fill.style.background = duck.health < 40 ? 'red' : 'orange';
+    if (fill) {
+        fill.style.width      = Math.max(0, duck.health) + '%';
+        fill.style.background = healthColor(duck.health);
+    }
     if (duck.health <= 0) killDuck(duck);
 }
 
 function killDuck(duck) {
     duck.alive = false;
     duck.el.classList.remove('controlled');
-    duck.el.style.backgroundPosition = `-${SPRITES.falling[0].x}px -${SPRITES.falling[0].y}px`;
     duck.el.style.transform = 'none';
+    _applySprite(duck, SPRITES[duck.type].falling[0]);
+    playSound('fall');
 
-    let fallY = duck.y;
-    // Guardar referencia al interval en el propio pato para poder cancelarlo
+    let fallY     = duck.y;
+    let fallFrame = 0;
     duck.fallInterval = setInterval(() => {
         fallY += 4;
+        fallFrame = (fallFrame + 1) % 2;
+        _applySprite(duck, SPRITES[duck.type].falling[fallFrame]);
         duck.el.style.top = fallY + 'px';
         if (fallY > DOM.gameContainer.offsetHeight) {
             clearInterval(duck.fallInterval);
             duck.fallInterval = null;
             duck.el.style.display = 'none';
         }
-    }, 20);
+    }, 60);
 
     if (state.game.ducks[state.game.currentDuckIdx] === duck) switchToNextDuck();
     updateHUD();

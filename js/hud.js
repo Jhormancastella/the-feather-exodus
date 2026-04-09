@@ -18,8 +18,6 @@ function cacheDOMRefs() {
     DOM.gameContainer = document.getElementById('game-container');
     DOM.menuTopscore  = document.getElementById('menu-topscore');
     DOM.pauseBtn      = document.getElementById('pause-btn');
-
-    // Botón pausa
     DOM.pauseBtn.addEventListener('click', () => showPause());
 }
 

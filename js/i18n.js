@@ -12,7 +12,9 @@ const LANGS = {
         menuOptions:   'OPCIONES',
         menuCredits:   'CREDITOS',
         menuExit:      'SALIR',
-        menuCopyright: '©2025 FEATHER EXODUS',
+        menuCopyright: '©2026 FEATHER EXODUS',
+        menuTitleLine1: 'ÉXODO',
+        menuTitleLine2: 'DE PLUMAS',
 
         // ── HUD
         hudLevel:   'NIVEL',
@@ -52,10 +54,12 @@ const LANGS = {
         galleryLevel3:  'NIVEL 3',
         galleryLevel5:  'NIVEL 5',
         galleryLevel7:  'NIVEL 7',
+        galleryLevel9:  'NIVEL 9',
         galleryDesc1:   'Primer vuelo',
         galleryDesc3:   'Rojos en bandada',
         galleryDesc5:   'Plumas marrones',
         galleryDesc7:   'Exodo legendario',
+        galleryDesc9:   'El ultimo vuelo',
         galleryLocked:   '??? BLOQUEADO',
         galleryUnlocked: '★ DESBLOQUEADO',
 
@@ -73,26 +77,31 @@ const LANGS = {
         optSaved:       '[ GUARDADO! ]',
 
         // ── Modal: Créditos
-        modalCredits:   'CREDITOS',
-        creditsTitle:   'FEATHER EXODUS',
-        creditsSub:     'EL EXODO DE LAS PLUMAS',
-        creditsDev:     '— DESARROLLO —',
-        creditsDevLine1:'Diseño y programacion',
-        creditsDevLine2:'Indie Dev',
-        creditsArt:     '— ARTE —',
-        creditsArtLine1:'Sprites originales',
-        creditsArtLine2:'Nintendo / Duck Hunt (NES)',
-        creditsArtLine3:'Dominio publico',
-        creditsTest:    '— TESTING —',
-        creditsTestSpc: '♥ Rosy ♥',
-        creditsTestLine:'Por aguantar cada bug',
-        creditsInsp:    '— INSPIRACION —',
-        creditsInspLine1:'Duck Hunt — Nintendo 1984',
-        creditsInspLine2:'Todos los patos que escaparon',
-        creditsTech:    '— TECNOLOGIA —',
-        creditsTechLine1:'HTML · CSS · JavaScript',
-        creditsTechLine2:'Sin frameworks. Solo codigo.',
-        creditsThanks:  'GRACIAS POR JUGAR',
+        modalCredits:      'CREDITOS',
+        creditsTitle1:     'FEATHER EXODUS',
+        creditsTitle2:     'ÉXODO DE PLUMAS',
+        creditsSub:        'EL ÉXODO DE LAS PLUMAS',
+        creditsDev:        '— DESARROLLO —',
+        creditsDevLine1:   'Diseño y programacion',
+        creditsDevLine2:   'Jhorman Castella',
+        creditsArt:        '— ARTE —',
+        creditsArtLine1:   'Sprites originales',
+        creditsArtLine2:   'Nintendo / Duck Hunt (NES)',
+        creditsArtLine3:   'Dominio publico',
+        creditsTest:       '— TESTING —',
+        creditsTestSpc:    '♥ Rosy ♥',
+        creditsTestLine:   'Por aguantar cada bug',
+        creditsInsp:       '— INSPIRACION —',
+        creditsInspLine1:  'Duck Hunt — Nintendo 1984',
+        creditsInspLine2:  'Todos los patos que escaparon',
+        creditsTech:       '— TECNOLOGIA —',
+        creditsTechLine1:  'HTML · CSS · JavaScript',
+        creditsTechLine2:  'Sin frameworks. Solo codigo.',
+        creditsRepo:       '— REPOSITORIO —',
+        creditsRepoLine1:  'github.com/Jhormancastella',
+        creditsRepoLine2:  'the-feather-exodus',
+        creditsVersion:    'VERSION 1.0.0',
+        creditsThanks:     'GRACIAS POR JUGAR',
 
         // ── Modal: Pausa
         modalPause:     'PAUSA',
@@ -116,7 +125,9 @@ const LANGS = {
         menuOptions:   'OPTIONS',
         menuCredits:   'CREDITS',
         menuExit:      'EXIT',
-        menuCopyright: '©2025 FEATHER EXODUS',
+        menuCopyright: '©2026 FEATHER EXODUS',
+        menuTitleLine1: 'FEATHER',
+        menuTitleLine2: 'EXODUS',
 
         hudLevel:   'LEVEL',
         hudTime:    'TIME',
@@ -150,10 +161,12 @@ const LANGS = {
         galleryLevel3:  'LEVEL 3',
         galleryLevel5:  'LEVEL 5',
         galleryLevel7:  'LEVEL 7',
+        galleryLevel9:  'LEVEL 9',
         galleryDesc1:   'First flight',
         galleryDesc3:   'Red flock',
         galleryDesc5:   'Brown feathers',
         galleryDesc7:   'Legendary exodus',
+        galleryDesc9:   'The last flight',
         galleryLocked:   '??? LOCKED',
         galleryUnlocked: '★ UNLOCKED',
 
@@ -169,26 +182,31 @@ const LANGS = {
         optSave:        '[ SAVE ]',
         optSaved:       '[ SAVED! ]',
 
-        modalCredits:   'CREDITS',
-        creditsTitle:   'FEATHER EXODUS',
-        creditsSub:     'THE FEATHER EXODUS',
-        creditsDev:     '— DEVELOPMENT —',
-        creditsDevLine1:'Design and programming',
-        creditsDevLine2:'Indie Dev',
-        creditsArt:     '— ART —',
-        creditsArtLine1:'Original sprites',
-        creditsArtLine2:'Nintendo / Duck Hunt (NES)',
-        creditsArtLine3:'Public domain',
-        creditsTest:    '— TESTING —',
-        creditsTestSpc: '♥ Rosy ♥',
-        creditsTestLine:'For putting up with every bug',
-        creditsInsp:    '— INSPIRATION —',
-        creditsInspLine1:'Duck Hunt — Nintendo 1984',
-        creditsInspLine2:'All the ducks that got away',
-        creditsTech:    '— TECHNOLOGY —',
-        creditsTechLine1:'HTML · CSS · JavaScript',
-        creditsTechLine2:'No frameworks. Just code.',
-        creditsThanks:  'THANKS FOR PLAYING',
+        modalCredits:      'CREDITS',
+        creditsTitle1:     'FEATHER EXODUS',
+        creditsTitle2:     'FEATHER EXODUS',
+        creditsSub:        'THE FEATHER EXODUS',
+        creditsDev:        '— DEVELOPMENT —',
+        creditsDevLine1:   'Design and programming',
+        creditsDevLine2:   'Jhorman Castella',
+        creditsArt:        '— ART —',
+        creditsArtLine1:   'Original sprites',
+        creditsArtLine2:   'Nintendo / Duck Hunt (NES)',
+        creditsArtLine3:   'Public domain',
+        creditsTest:       '— TESTING —',
+        creditsTestSpc:    '♥ Rosy ♥',
+        creditsTestLine:   'For putting up with every bug',
+        creditsInsp:       '— INSPIRATION —',
+        creditsInspLine1:  'Duck Hunt — Nintendo 1984',
+        creditsInspLine2:  'All the ducks that got away',
+        creditsTech:       '— TECHNOLOGY —',
+        creditsTechLine1:  'HTML · CSS · JavaScript',
+        creditsTechLine2:  'No frameworks. Just code.',
+        creditsRepo:       '— REPOSITORY —',
+        creditsRepoLine1:  'github.com/Jhormancastella',
+        creditsRepoLine2:  'the-feather-exodus',
+        creditsVersion:    'VERSION 1.0.0',
+        creditsThanks:     'THANKS FOR PLAYING',
 
         modalPause:     'PAUSE',
         pauseLevel:     'LEVEL',
@@ -222,6 +240,10 @@ function _applyLangToDOM() {
     // Título de la página
     document.title = t('pageTitle');
 
+    // Título del menú (líneas del logo)
+    _setTextDirect('#menu-title-1', t('menuTitleLine1'));
+    _setTextDirect('#menu-title-2', t('menuTitleLine2'));
+
     // Menú principal
     _setText('btn-continue',  t('menuContinue'));
     _setText('btn-newgame',   t('menuNewGame'));
@@ -237,8 +259,9 @@ function _applyLangToDOM() {
     _setTextDirect('#hud .hud-section:nth-child(3) .hud-label', t('hudScore'));
     _setTextDirect('#hud .hud-section:nth-child(4) .hud-label', t('hudHunter'));
 
-    // Botón pausa
-    _setTextDirect('#pause-btn', t('btnPause'));
+    // Botón pausa — solo actualizar aria-label, el texto ⏸ es fijo
+    const pb = document.querySelector('#pause-btn');
+    if (pb) pb.setAttribute('aria-label', t('btnPause'));
 
     // Hint escritorio
     _setTextDirect('#desktop-hint', t('desktopHint'));

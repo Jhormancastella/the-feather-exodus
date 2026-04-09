@@ -29,12 +29,11 @@ function loadGameProgress() {
         state.game.level = data.level || 0;
         if (data.unlocked) state.unlockedImages = data.unlocked;
         if (data.options) {
-            state.settings.soundEnabled    = data.options.sound;
-            state.settings.graphicsQuality = data.options.graphics;
-            if (data.options.language) {
-                state.settings.language = data.options.language;
-                currentLang = data.options.language;
-            }
+            state.settings.soundEnabled    = data.options.sound    ?? true;
+            state.settings.graphicsQuality = data.options.graphics ?? 'pixelated';
+            // Idioma: usar guardado o caer en español
+            state.settings.language = data.options.language || 'es';
+            currentLang             = state.settings.language;
         }
         return true;
     } catch (e) {
@@ -62,5 +61,6 @@ function updateUnlocksByLevel(levelIdx) {
     if (levelIdx >= 3) state.unlockedImages.level3 = true;
     if (levelIdx >= 5) state.unlockedImages.level5 = true;
     if (levelIdx >= 7) state.unlockedImages.level7 = true;
+    if (levelIdx >= 9) state.unlockedImages.level9 = true;
     saveGameProgress();
 }

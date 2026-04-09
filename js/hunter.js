@@ -8,6 +8,7 @@ function fireShot(x, y) {
     flash.style.top  = (y - 15) + 'px';
     DOM.gameContainer.appendChild(flash);
     setTimeout(() => flash.remove(), 80);
+    playSoundClone('shot');
 
     // Rastro de bala
     const trail = document.createElement('div');
@@ -18,7 +19,8 @@ function fireShot(x, y) {
     DOM.gameContainer.appendChild(trail);
     setTimeout(() => trail.remove(), 100);
 
-    // Detección de impacto
+    // Detección de impacto — no disparar durante transición
+    if (state.game.transitioning) return;
     state.game.ducks.forEach(duck => {
         if (!duck.alive || duck.invincible > 0) return;
         const dx = (duck.x + 18) - x;

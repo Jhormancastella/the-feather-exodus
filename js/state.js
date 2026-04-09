@@ -15,7 +15,7 @@ const state = {
         saved: false
     },
 
-    unlockedImages: { level1: false, level3: false, level5: false, level7: false },
+    unlockedImages: { level1: false, level3: false, level5: false, level7: false, level9: false },
 
     settings: {
         soundEnabled: true,

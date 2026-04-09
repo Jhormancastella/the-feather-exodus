@@ -164,7 +164,6 @@
     overflow: hidden;
 }
 
-/* Canvas de patos — detrás del texto */
 #credits-canvas {
     position: absolute;
     top: 0; left: 0;
@@ -172,22 +171,35 @@
     image-rendering: pixelated;
 }
 
-/* Texto encima del canvas */
 .credits-text-overlay {
     position: relative;
     z-index: 2;
-    padding: 24px 32px;
-    overflow-y: auto;
-    height: 100%;
+    padding: 20px 32px 32px;
+    /* Sin overflow — el scroll lo hace la animación translateY */
+    overflow: visible;
+    height: auto;
     text-align: center;
-    /* Scroll suave automático */
-    animation: creditsScroll 16s linear forwards;
+    /* Empieza desde abajo del contenedor y sube */
+    animation: creditsScroll 22s linear forwards;
+    animation-delay: 0.5s;
+    transform: translateY(100%);
 }
 @keyframes creditsScroll {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-55%); }
+    0%   { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
 }
 
+/* Bloque del título */
+.c-title-wrap { margin-bottom: 20px; }
+
+.c-title-divider {
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #e07000, transparent);
+    margin: 6px auto 8px;
+}
+
+/* Título principal animado */
 .c-title {
     font-size: 20px;
     font-weight: bold;
@@ -195,21 +207,28 @@
     letter-spacing: 5px;
     margin-bottom: 4px;
     text-shadow: 0 0 10px #ff8800, 2px 2px 0 #000;
+    transition: opacity 0.3s;
 }
+.c-title-anim { display: inline-block; }
+.c-title-fade { opacity: 0; }
+
 .c-end { margin-top: 28px; font-size: 16px; }
+
 .c-sub {
     font-size: 10px;
     color: #888;
     letter-spacing: 3px;
-    margin-bottom: 24px;
+    margin-bottom: 4px;
 }
+
 .c-section {
-    font-size: 12px;
+    font-size: 11px;
     color: #00e5cc;
     letter-spacing: 3px;
-    margin: 22px 0 6px;
+    margin: 20px 0 6px;
     text-shadow: 0 0 6px #00e5cc;
 }
+
 .c-line {
     font-size: 12px;
     color: #ccc;
@@ -217,12 +236,47 @@
     margin: 3px 0;
     text-shadow: 1px 1px 0 #000;
 }
+
+/* Nombre del dev destacado */
+.c-highlight {
+    color: #ffcc00;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-shadow: 0 0 8px #ff8800, 1px 1px 0 #000;
+}
+
 .c-special {
     font-size: 14px;
     color: #ff6688;
     letter-spacing: 3px;
     margin: 6px 0;
     text-shadow: 0 0 8px #ff3366, 1px 1px 0 #000;
+}
+
+/* Repositorio */
+.c-repo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px 0;
+}
+.c-repo-icon { color: #888; font-size: 14px; }
+.c-repo-link {
+    color: #7ec8ff;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(126,200,255,0.4);
+    transition: color 0.2s;
+}
+.c-repo-link:hover { color: #fff; border-color: #fff; }
+
+.c-version {
+    font-size: 9px;
+    color: #444;
+    letter-spacing: 3px;
+    margin: 16px 0 4px;
 }
 
 /* ── PAUSA ────────────────────────────────────────────────────── */
@@ -243,11 +297,14 @@
     letter-spacing: 3px;
     border-bottom: 1px solid #1a1a1a;
     transition: color 0.1s;
+    outline: none;
 }
 .pause-opt:last-child { border-bottom: none; }
 .pause-opt .p-arrow { color: #fff; visibility: hidden; }
-.pause-opt:hover { color: #fff; }
-.pause-opt:hover .p-arrow { visibility: visible; }
+.pause-opt:hover,
+.pause-opt.selected { color: #fff; }
+.pause-opt:hover .p-arrow,
+.pause-opt.selected .p-arrow { visibility: visible; }
 .pause-stat {
     display: flex;
     justify-content: space-around;
@@ -259,21 +316,34 @@
 .pause-stat-item .ps-label { font-size: 9px; color: #555; letter-spacing: 2px; }
 .pause-stat-item .ps-val   { font-size: 20px; color: #fff; }
 
-/* Botón PAUSA en el HUD */
+/* Botón PAUSA — dentro del HUD como último elemento */
 #pause-btn {
-    position: absolute;
-    top: 12px;
-    right: 20px;
     background: transparent;
-    border: 2px solid #fff;
+    border: 2px solid rgba(255,255,255,0.6);
     color: #fff;
     font-family: 'Courier New', monospace;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
-    letter-spacing: 2px;
-    padding: 4px 10px;
+    letter-spacing: 1px;
+    padding: 6px 10px;
     cursor: pointer;
-    z-index: 110;
     transition: all 0.1s;
+    flex-shrink: 0;
+    /* Área táctil generosa para móvil */
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-#pause-btn:hover { background: #fff; color: #000; }
+#pause-btn:hover  { background: #fff; color: #000; border-color: #fff; }
+#pause-btn:active { transform: scale(0.94); }
+
+@media (max-width: 768px) {
+    #pause-btn {
+        font-size: 14px;
+        min-width: 48px;
+        min-height: 48px;
+        border-color: rgba(255,255,255,0.8);
+    }
+}

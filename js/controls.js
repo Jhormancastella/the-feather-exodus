@@ -53,6 +53,12 @@ function initControls() {
         newGame();
         DOM.screenOver.style.display = 'none';
     });
+
+    // Pausa — tanto click como touchstart para móvil
+    DOM.pauseBtn.addEventListener('touchstart', e => {
+        e.preventDefault();
+        showPause();
+    }, { passive: false });
 }
 
 function handleJoy(touch, joyZone, joyKnob) {
