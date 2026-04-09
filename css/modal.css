@@ -1,0 +1,279 @@
+/* --- MODALES --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.92);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 400;
+    font-family: 'Courier New', monospace;
+    animation: modalFadeIn 0.15s ease;
+}
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+    background: #000;
+    border: 3px solid #fff;
+    width: 85%;
+    max-width: 560px;
+    max-height: 82vh;
+    overflow: hidden;
+    color: #fff;
+    text-align: center;
+    position: relative;
+}
+
+/* Barra de título estilo NES */
+.modal-titlebar {
+    background: #fff;
+    color: #000;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-titlebar .modal-close-x {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    background: #000;
+    color: #fff;
+    border: none;
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: monospace;
+    flex-shrink: 0;
+}
+.modal-titlebar .modal-close-x:hover { background: #e00; }
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(82vh - 44px);
+}
+
+/* ── OPCIONES ─────────────────────────────────────────────────── */
+.option-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #222;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+.option-row:last-of-type { border-bottom: none; }
+.option-row span { color: #aaa; }
+
+/* Toggle switch estilo pixel */
+.pixel-toggle {
+    position: relative;
+    width: 48px; height: 24px;
+    cursor: pointer;
+}
+.pixel-toggle input { display: none; }
+.pixel-toggle-track {
+    width: 100%; height: 100%;
+    background: #333;
+    border: 2px solid #555;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    transition: background 0.1s;
+}
+.pixel-toggle input:checked + .pixel-toggle-track { background: #00aa00; border-color: #0f0; }
+.pixel-toggle-thumb {
+    width: 16px; height: 16px;
+    background: #fff;
+    transition: transform 0.1s;
+}
+.pixel-toggle input:checked + .pixel-toggle-track .pixel-toggle-thumb {
+    transform: translateX(24px);
+}
+
+.pixel-select {
+    background: #111;
+    color: #fff;
+    border: 2px solid #555;
+    padding: 4px 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+.pixel-select:focus { outline: none; border-color: #fff; }
+
+.option-save-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 16px auto 0;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #0f0;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+.option-save-btn:hover { background: #0f0; color: #000; }
+
+/* ── GALERÍA ──────────────────────────────────────────────────── */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 12px;
+    margin: 4px 0 16px;
+}
+.gallery-item {
+    background: #0a0a0a;
+    border: 2px solid #333;
+    padding: 10px 6px;
+    text-align: center;
+    filter: grayscale(1);
+    opacity: 0.4;
+    transition: 0.2s;
+    cursor: default;
+}
+.gallery-item p     { color: #fff; font-size: 11px; margin: 6px 0 2px; letter-spacing: 1px; }
+.gallery-item small { color: #555; font-size: 9px; }
+.gallery-item.unlocked {
+    filter: none;
+    opacity: 1;
+    border-color: #ffcc00;
+    box-shadow: 0 0 8px rgba(255,200,0,0.3);
+}
+.gallery-item.unlocked small { color: #ffcc00; }
+.gallery-item img { width: 72px; height: 72px; image-rendering: pixelated; }
+
+/* ── CRÉDITOS — patos volando detrás del texto ───────────────── */
+.credits-scene {
+    position: relative;
+    width: 100%;
+    height: 360px;
+    background: #000;
+    overflow: hidden;
+}
+
+/* Canvas de patos — detrás del texto */
+#credits-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    image-rendering: pixelated;
+}
+
+/* Texto encima del canvas */
+.credits-text-overlay {
+    position: relative;
+    z-index: 2;
+    padding: 24px 32px;
+    overflow-y: auto;
+    height: 100%;
+    text-align: center;
+    /* Scroll suave automático */
+    animation: creditsScroll 16s linear forwards;
+}
+@keyframes creditsScroll {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-55%); }
+}
+
+.c-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffcc00;
+    letter-spacing: 5px;
+    margin-bottom: 4px;
+    text-shadow: 0 0 10px #ff8800, 2px 2px 0 #000;
+}
+.c-end { margin-top: 28px; font-size: 16px; }
+.c-sub {
+    font-size: 10px;
+    color: #888;
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+}
+.c-section {
+    font-size: 12px;
+    color: #00e5cc;
+    letter-spacing: 3px;
+    margin: 22px 0 6px;
+    text-shadow: 0 0 6px #00e5cc;
+}
+.c-line {
+    font-size: 12px;
+    color: #ccc;
+    letter-spacing: 2px;
+    margin: 3px 0;
+    text-shadow: 1px 1px 0 #000;
+}
+.c-special {
+    font-size: 14px;
+    color: #ff6688;
+    letter-spacing: 3px;
+    margin: 6px 0;
+    text-shadow: 0 0 8px #ff3366, 1px 1px 0 #000;
+}
+
+/* ── PAUSA ────────────────────────────────────────────────────── */
+.pause-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0 4px;
+}
+.pause-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #e07000;
+    letter-spacing: 3px;
+    border-bottom: 1px solid #1a1a1a;
+    transition: color 0.1s;
+}
+.pause-opt:last-child { border-bottom: none; }
+.pause-opt .p-arrow { color: #fff; visibility: hidden; }
+.pause-opt:hover { color: #fff; }
+.pause-opt:hover .p-arrow { visibility: visible; }
+.pause-stat {
+    display: flex;
+    justify-content: space-around;
+    padding: 14px 20px;
+    border-bottom: 2px solid #222;
+    margin-bottom: 4px;
+}
+.pause-stat-item { text-align: center; }
+.pause-stat-item .ps-label { font-size: 9px; color: #555; letter-spacing: 2px; }
+.pause-stat-item .ps-val   { font-size: 20px; color: #fff; }
+
+/* Botón PAUSA en el HUD */
+#pause-btn {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    cursor: pointer;
+    z-index: 110;
+    transition: all 0.1s;
+}
+#pause-btn:hover { background: #fff; color: #000; }

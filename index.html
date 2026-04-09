@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Feather Exodus - El Exodo de las Plumas</title>
+    <link rel="icon" type="image/png" href="https://www.clipartmax.com/png/middle/428-4287261_duck-hunt-nintendo-sprite-clipart-png-download-duck-hunt-nintendo-sprite.png">
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/hud.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/modal.css">
+</head>
+<body>
+<div id="app">
+
+    <!-- Menú Principal estilo NES -->
+    <div id="main-menu">
+        <div class="nes-title-block">
+            <span class="nes-title-line">FEATHER</span>
+            <span class="nes-title-divider"></span>
+            <span class="nes-title-line">EXODUS</span>
+        </div>
+        <div class="nes-selector" id="nes-menu">
+            <div class="nes-option" id="btn-continue"><span class="arrow">&#9658;</span>CONTINUAR</div>
+            <div class="nes-option" id="btn-newgame"><span class="arrow">&#9658;</span>NUEVA PARTIDA</div>
+            <div class="nes-option" id="btn-gallery"><span class="arrow">&#9658;</span>GALERIA</div>
+            <div class="nes-option" id="btn-options"><span class="arrow">&#9658;</span>OPCIONES</div>
+            <div class="nes-option" id="btn-credits"><span class="arrow">&#9658;</span>CREDITOS</div>
+            <div class="nes-option" id="btn-exit"><span class="arrow">&#9658;</span>SALIR</div>
+        </div>
+        <div class="nes-topscore" id="menu-topscore">TOP SCORE = 0</div>
+        <div class="nes-copyright">&#169;2025 FEATHER EXODUS</div>
+    </div>
+
+    <!-- Contenedor del juego -->
+    <div id="game-container">
+
+        <!-- Fondo: sol, nubes, pájaros, montañas, pasto -->
+        <div class="bg-sun"></div>
+
+        <!-- Nubes — posiciones y velocidades variadas -->
+        <div class="bg-cloud cloud-a cloud-move-1" style="top:8%;  left:-90px;"></div>
+        <div class="bg-cloud cloud-b cloud-move-2" style="top:14%; left:-70px; animation-delay:-12s;"></div>
+        <div class="bg-cloud cloud-a cloud-move-3" style="top:6%;  left:-90px; animation-delay:-7s;"></div>
+        <div class="bg-cloud cloud-c cloud-move-4" style="top:18%; left:-50px; animation-delay:-20s;"></div>
+        <div class="bg-cloud cloud-b cloud-move-5" style="top:10%; left:-70px; animation-delay:-3s;"></div>
+        <div class="bg-cloud cloud-c cloud-move-6" style="top:20%; left:-50px; animation-delay:-30s;"></div>
+        <div class="bg-cloud cloud-a cloud-move-2" style="top:4%;  left:-90px; animation-delay:-18s;"></div>
+        <div class="bg-cloud cloud-b cloud-move-3" style="top:22%; left:-70px; animation-delay:-8s;"></div>
+
+        <!-- Pájaros lejanos -->
+        <div class="bg-bird bird-1" style="left:-20px;"></div>
+        <div class="bg-bird bird-2" style="left:-20px;"></div>
+        <div class="bg-bird bird-3" style="left:-20px;"></div>
+
+        <!-- Montañas -->
+        <div class="bg-mountains-far"></div>
+        <div class="bg-mountains-near"></div>
+
+        <!-- Capas de pasto -->
+        <div class="bg-grass-far"></div>
+        <div class="bg-grass-mid"></div>
+        <div class="bg-grass-near"></div>
+
+        <!-- Flores decorativas -->
+        <div class="bg-flower" style="bottom:16%; left:8%;"></div>
+        <div class="bg-flower" style="bottom:14%; left:22%;"></div>
+        <div class="bg-flower" style="bottom:17%; left:45%;"></div>
+        <div class="bg-flower" style="bottom:15%; left:63%;"></div>
+        <div class="bg-flower" style="bottom:16%; left:80%;"></div>
+        <div class="bg-flower" style="bottom:13%; left:91%;"></div>
+        <div id="hud">
+            <div class="hud-section">
+                <span class="hud-label">NIVEL</span>
+                <span class="hud-val" id="ui-level">1</span>
+            </div>
+            <div class="hud-section">
+                <span class="hud-label">TIEMPO</span>
+                <span class="hud-val" id="ui-time">00</span>
+            </div>
+            <div class="hud-section">
+                <span class="hud-label">PUNTOS</span>
+                <span class="hud-val" id="ui-score">0</span>
+            </div>
+            <div class="hud-section">
+                <span class="hud-label">CAZADOR</span>
+                <span class="hud-val" id="ui-hunter">***</span>
+            </div>
+        </div>
+
+        <div id="control-indicator">JUGADOR: PATO NEGRO</div>
+        <button id="pause-btn">II PAUSA</button>
+
+        <div id="desktop-hint" style="position:absolute;bottom:10px;width:100%;text-align:center;color:#fff;font-size:12px;">
+            WASD: Mover &nbsp;|&nbsp; TAB: Cambiar Pato &nbsp;|&nbsp; ESPACIO: Boost
+        </div>
+
+        <div id="mobile-controls">
+            <div id="joystick"><div id="joy-knob"></div></div>
+            <div style="display:flex;flex-direction:column;">
+                <button class="btn btn-switch" id="btn-switch">CAMBIAR</button>
+                <button class="btn btn-boost"  id="btn-boost">BOOST</button>
+            </div>
+        </div>
+
+        <div id="screen-level">
+            <h1>NIVEL <span id="next-lvl-num">2</span></h1>
+            <p>Los patos se van!</p>
+            <p>Preparate...</p>
+        </div>
+
+        <div id="screen-over">
+            <h1>FIN DEL JUEGO</h1>
+            <p>Nivel: <span id="final-level">1</span></p>
+            <p>Puntuacion: <span id="final-score">0</span></p>
+            <button class="start-btn" id="restart-btn">REINTENTAR</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts (orden de dependencias) -->
+<script src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/hud.js"></script>
+<script src="js/ducks.js"></script>
+<script src="js/hunter.js"></script>
+<script src="js/loop.js"></script>
+<script src="js/controls.js"></script>
+<script src="js/game.js"></script>
+<script src="js/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+=== sprPverdes.png (316x169) ===
+  Sprite row: y=0 to y=168  (h=169)
+  sprite[0]: x=0  w=316  xEnd=315
+
+=== sprProjo.png (316x169) ===
+  Sprite row: y=0 to y=168  (h=169)
+  sprite[0]: x=0  w=316  xEnd=315
+
+=== sprPmorado.png (316x169) ===
+  Sprite row: y=0 to y=168  (h=169)
+  sprite[0]: x=0  w=316  xEnd=315
+

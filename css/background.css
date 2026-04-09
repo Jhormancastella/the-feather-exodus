@@ -1,0 +1,233 @@
+/* ================================================================
+   FONDO DEL JUEGO — cielo, nubes, sol, montañas, pasto
+   ================================================================ */
+
+#game-container {
+    background: linear-gradient(to bottom,
+        #4ec8f0 0%,
+        #74d4f5 25%,
+        #a8e6f8 45%,
+        #c8f0a0 65%,
+        #7bc44a 72%,
+        #5a9e32 80%,
+        #3d7a20 90%,
+        #2a5a12 100%
+    );
+}
+
+/* ── SOL ─────────────────────────────────────────────────────── */
+.bg-sun {
+    position: absolute;
+    top: 14%;
+    right: 8%;
+    width: 52px;
+    height: 52px;
+    background: #ffe566;
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 8px rgba(255,230,80,0.25),
+        0 0 0 16px rgba(255,220,60,0.12),
+        0 0 30px rgba(255,200,0,0.4);
+    z-index: 1;
+    animation: sunPulse 4s ease-in-out infinite;
+}
+@keyframes sunPulse {
+    0%,100% { box-shadow: 0 0 0 8px rgba(255,230,80,0.25), 0 0 0 16px rgba(255,220,60,0.12), 0 0 30px rgba(255,200,0,0.4); }
+    50%      { box-shadow: 0 0 0 12px rgba(255,230,80,0.3), 0 0 0 24px rgba(255,220,60,0.15), 0 0 45px rgba(255,200,0,0.5); }
+}
+
+/* ── NUBES ───────────────────────────────────────────────────── */
+.bg-cloud {
+    position: absolute;
+    z-index: 2;
+    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.12));
+}
+
+/* Forma de nube con pseudo-elementos */
+.bg-cloud::before,
+.bg-cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+/* Nube tipo A — grande y esponjosa */
+.cloud-a {
+    width: 80px; height: 28px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 28px;
+}
+.cloud-a::before {
+    width: 40px; height: 40px;
+    top: -20px; left: 12px;
+}
+.cloud-a::after {
+    width: 28px; height: 28px;
+    top: -14px; left: 38px;
+}
+
+/* Nube tipo B — mediana */
+.cloud-b {
+    width: 56px; height: 20px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+}
+.cloud-b::before {
+    width: 28px; height: 28px;
+    top: -14px; left: 8px;
+}
+.cloud-b::after {
+    width: 20px; height: 20px;
+    top: -10px; left: 28px;
+}
+
+/* Nube tipo C — pequeña */
+.cloud-c {
+    width: 38px; height: 14px;
+    background: rgba(255,255,255,0.78);
+    border-radius: 14px;
+}
+.cloud-c::before {
+    width: 18px; height: 18px;
+    top: -9px; left: 6px;
+}
+.cloud-c::after {
+    width: 13px; height: 13px;
+    top: -6px; left: 20px;
+}
+
+/* Animaciones de movimiento — cada nube a distinta velocidad */
+@keyframes cloudDrift1 { 0%{transform:translateX(0)}  100%{transform:translateX(110vw)} }
+@keyframes cloudDrift2 { 0%{transform:translateX(0)}  100%{transform:translateX(110vw)} }
+@keyframes cloudDrift3 { 0%{transform:translateX(0)}  100%{transform:translateX(110vw)} }
+
+.cloud-move-1 { animation: cloudDrift1 28s linear infinite; }
+.cloud-move-2 { animation: cloudDrift2 38s linear infinite; }
+.cloud-move-3 { animation: cloudDrift3 22s linear infinite; }
+.cloud-move-4 { animation: cloudDrift1 45s linear infinite; }
+.cloud-move-5 { animation: cloudDrift2 32s linear infinite; }
+.cloud-move-6 { animation: cloudDrift3 52s linear infinite; }
+
+/* ── PÁJAROS LEJANOS (siluetas simples) ──────────────────────── */
+.bg-bird {
+    position: absolute;
+    z-index: 3;
+    width: 12px; height: 4px;
+    border-top: 3px solid rgba(30,60,100,0.35);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+.bg-bird::after {
+    content: '';
+    position: absolute;
+    right: -6px; top: -3px;
+    width: 6px; height: 4px;
+    border-top: 3px solid rgba(30,60,100,0.35);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+}
+@keyframes birdFly { 0%{transform:translateX(-60px)} 100%{transform:translateX(110vw)} }
+.bird-1 { animation: birdFly 18s linear infinite; top: 18%; }
+.bird-2 { animation: birdFly 24s 4s linear infinite; top: 22%; }
+.bird-3 { animation: birdFly 20s 9s linear infinite; top: 15%; }
+
+/* ── MONTAÑAS — capa trasera ─────────────────────────────────── */
+.bg-mountains-far {
+    position: absolute;
+    bottom: 28%;
+    left: 0; right: 0;
+    height: 18%;
+    z-index: 1;
+    background:
+        /* pico 1 */ radial-gradient(ellipse 120px 160px at 12% 100%, #5a8a3a 99%, transparent 100%),
+        /* pico 2 */ radial-gradient(ellipse 160px 200px at 28% 100%, #4e7d30 99%, transparent 100%),
+        /* pico 3 */ radial-gradient(ellipse 140px 180px at 48% 100%, #5a8a3a 99%, transparent 100%),
+        /* pico 4 */ radial-gradient(ellipse 180px 220px at 68% 100%, #4e7d30 99%, transparent 100%),
+        /* pico 5 */ radial-gradient(ellipse 130px 170px at 85% 100%, #5a8a3a 99%, transparent 100%),
+        /* pico 6 */ radial-gradient(ellipse 100px 140px at 98% 100%, #4e7d30 99%, transparent 100%);
+}
+
+/* ── MONTAÑAS — capa delantera ───────────────────────────────── */
+.bg-mountains-near {
+    position: absolute;
+    bottom: 26%;
+    left: 0; right: 0;
+    height: 14%;
+    z-index: 2;
+    background:
+        radial-gradient(ellipse 100px 130px at 5%  100%, #3d6b22 99%, transparent 100%),
+        radial-gradient(ellipse 140px 170px at 20% 100%, #336018 99%, transparent 100%),
+        radial-gradient(ellipse 120px 150px at 38% 100%, #3d6b22 99%, transparent 100%),
+        radial-gradient(ellipse 160px 190px at 57% 100%, #336018 99%, transparent 100%),
+        radial-gradient(ellipse 110px 140px at 74% 100%, #3d6b22 99%, transparent 100%),
+        radial-gradient(ellipse 130px 160px at 90% 100%, #336018 99%, transparent 100%);
+}
+
+/* ── FRANJA DE PASTO — capas ─────────────────────────────────── */
+.bg-grass-far {
+    position: absolute;
+    bottom: 24%;
+    left: 0; right: 0;
+    height: 6%;
+    z-index: 3;
+    background: #5aaa2a;
+    border-radius: 50% 50% 0 0 / 30px 30px 0 0;
+}
+
+.bg-grass-mid {
+    position: absolute;
+    bottom: 18%;
+    left: 0; right: 0;
+    height: 8%;
+    z-index: 4;
+    background: linear-gradient(to bottom, #4a9e20 0%, #3a8010 100%);
+}
+
+.bg-grass-near {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    height: 20%;
+    z-index: 5;
+    background: linear-gradient(to bottom, #3a8010 0%, #2a6008 50%, #1a4a04 100%);
+}
+
+/* Detalle de hierba con líneas */
+.bg-grass-near::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 12px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 6px,
+        rgba(80,180,20,0.4) 6px,
+        rgba(80,180,20,0.4) 8px
+    );
+}
+
+/* ── FLORES / DETALLES EN EL PASTO ──────────────────────────── */
+.bg-flower {
+    position: absolute;
+    z-index: 6;
+    width: 6px; height: 10px;
+    background: #2a6008;
+}
+.bg-flower::before {
+    content: '';
+    position: absolute;
+    top: -5px; left: -3px;
+    width: 12px; height: 8px;
+    border-radius: 50%;
+    background: #ffdd44;
+    box-shadow: 0 0 3px rgba(255,200,0,0.5);
+}
+
+/* ── RESPONSIVE — móvil ──────────────────────────────────────── */
+@media (max-width: 768px) {
+    .bg-sun { width: 38px; height: 38px; top: 10%; right: 5%; }
+    .cloud-a { width: 60px; height: 20px; }
+    .cloud-b { width: 42px; height: 15px; }
+    .bg-mountains-far { height: 14%; bottom: 30%; }
+    .bg-mountains-near { height: 10%; bottom: 28%; }
+}

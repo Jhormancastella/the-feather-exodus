@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Debug Sprites</title>
+<style>
+    body { background: #222; color: #fff; font-family: monospace; padding: 20px; }
+    h2 { color: #0ff; margin: 20px 0 8px; }
+    .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 10px; }
+    .cell { text-align: center; }
+    .cell span { display: block; font-size: 9px; color: #aaa; margin-top: 4px; }
+    .spr {
+        display: inline-block;
+        width: 44px; height: 42px;
+        background-image: url('img/sprP.png');
+        background-repeat: no-repeat;
+        background-size: auto;
+        image-rendering: pixelated;
+        border: 1px solid #555;
+    }
+    .original { image-rendering: pixelated; border: 2px solid #0ff; display: block; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>Debug Spritesheet — escala 1:1</h1>
+<p>Imagen original (2x para referencia):</p>
+<img src="img/sprP.png" style="width:632px;height:338px;" class="original">
+
+<div id="output"></div>
+
+<script>
+const SW = 44, SH = 42;
+
+function sprCoord(x, y, w, h) {
+    return {
+        bx: -x + Math.floor((SW - w) / 2),
+        by: -y + Math.floor((SH - h) / 2)
+    };
+}
+
+const RAW = {
+    green: {
+        y: 2, h: 39,
+        frames: [
+            { label:'diag-0',  x:8,   w:27 },
+            { label:'diag-1',  x:39,  w:32 },
+            { label:'diag-2',  x:74,  w:24 },
+            { label:'horiz-0', x:109, w:19 },
+            { label:'horiz-1', x:147, w:19 },
+            { label:'horiz-2', x:184, w:19 },
+            { label:'hit',     x:226, w:29 },
+            { label:'fall-0',  x:269, w:16 },
+            { label:'fall-1',  x:291, w:18 },
+        ]
+    },
+    red: {
+        y: 45, h: 37,
+        frames: [
+            { label:'diag-0',  x:8,   w:27 },
+            { label:'diag-1',  x:39,  w:32 },
+            { label:'diag-2',  x:73,  w:25 },
+            { label:'horiz-0', x:107, w:22 },
+            { label:'horiz-1', x:145, w:22 },
+            { label:'horiz-2', x:182, w:22 },
+            { label:'hit',     x:224, w:31 },
+            { label:'fall-0',  x:264, w:18 },
+            { label:'fall-1',  x:288, w:18 },
+        ]
+    },
+    blue: {
+        y: 88, h: 36,
+        frames: [
+            { label:'diag-0',  x:6,   w:27 },
+            { label:'diag-1',  x:37,  w:32 },
+            { label:'diag-2',  x:71,  w:25 },
+            { label:'horiz-0', x:105, w:34 },
+            { label:'horiz-1', x:143, w:34 },
+            { label:'horiz-2', x:180, w:34 },
+            { label:'hit',     x:222, w:31 },
+            { label:'fall-0',  x:263, w:18 },
+            { label:'fall-1',  x:287, w:18 },
+        ]
+    }
+};
+
+const out = document.getElementById('output');
+
+Object.entries(RAW).forEach(([type, data]) => {
+    const h2 = document.createElement('h2');
+    h2.textContent = `PATO ${type.toUpperCase()} — y=${data.y} h=${data.h}`;
+    out.appendChild(h2);
+
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    data.frames.forEach(f => {
+        const c = sprCoord(f.x, data.y, f.w, data.h);
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.innerHTML = `
+            <div class="spr" style="background-position: ${c.bx}px ${c.by}px;"></div>
+            <span>${f.label}</span>
+            <span>x:${f.x} w:${f.w}</span>
+        `;
+        row.appendChild(cell);
+    });
+
+    out.appendChild(row);
+});
+</script>
+</body>
+</html>

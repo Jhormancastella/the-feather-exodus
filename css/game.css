@@ -1,0 +1,89 @@
+/* --- ELEMENTOS DEL JUEGO --- */
+.duck {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    background-image: url('https://i0.wp.com/github.com/elpsk/Unity3D-Nintentdo_Duck_Hunt/raw/master/Assets/Resources/duckhunt_various_sheet.png?ssl=1');
+    background-repeat: no-repeat;
+    background-size: auto;
+    z-index: 10;
+    transform-origin: center center;
+    image-rendering: pixelated;
+}
+
+.duck.controlled {
+    z-index: 20;
+    filter: brightness(1.3);
+}
+
+.duck.controlled::after {
+    content: '';
+    position: absolute;
+    top: -6px; left: -6px; right: -6px; bottom: -6px;
+    border: 2px dashed cyan;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.duck-health {
+    position: absolute;
+    bottom: -8px; left: 0;
+    width: 100%;
+    height: 4px;
+    background: #000;
+    border-radius: 2px;
+}
+
+.duck-health-fill {
+    height: 100%;
+    background: #0f0;
+    width: 100%;
+    transition: width 0.1s;
+}
+
+/* Mira del cazador */
+.crosshair {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    z-index: 50;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+.crosshair.visible { opacity: 1; }
+.crosshair::before,
+.crosshair::after {
+    content: '';
+    position: absolute;
+    background: red;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+.crosshair::before { width: 100%; height: 2px; }
+.crosshair::after  { height: 100%; width: 2px; }
+
+/* Efectos de disparo */
+.muzzle-flash {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 10%, #ffaa00 40%, transparent 80%);
+    z-index: 55;
+    animation: flashFast 0.08s linear forwards;
+}
+
+@keyframes flashFast {
+    0%   { opacity: 1; transform: scale(0.5); }
+    100% { opacity: 0; transform: scale(1); }
+}
+
+.bullet-trail {
+    position: absolute;
+    width: 2px;
+    background: rgba(255,255,0,0.5);
+    z-index: 45;
+}
