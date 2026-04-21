@@ -587,41 +587,68 @@ function handleIntroVideo() {
 
     if (!introContainer || !introVideo) return;
 
+    let finished = false;
     const finishIntro = () => {
+        if (finished) return;
+        finished = true;
         introVideo.pause();
         introContainer.style.transition = 'opacity 0.5s ease';
         introContainer.style.opacity = '0';
         setTimeout(() => {
-            introContainer.remove();
+            if (introContainer.parentNode) {
+                introContainer.remove();
+            }
             // Iniciar música del menú si no ha empezado
             playMenuMusic();
         }, 500);
     };
 
+    // Timeout de seguridad: si en 6 segundos no ha pasado nada, saltar
+    const safetyTimeout = setTimeout(() => {
+        console.warn("Intro video timed out");
+        finishIntro();
+    }, 6000);
+
     // Al terminar el video
-    introVideo.onended = finishIntro;
+    introVideo.onended = () => {
+        clearTimeout(safetyTimeout);
+        finishIntro();
+    };
+
+    // Error de carga
+    introVideo.onerror = () => {
+        console.error("Error loading intro video");
+        clearTimeout(safetyTimeout);
+        finishIntro();
+    };
 
     // Al hacer clic en el contenedor (saltar)
-    introContainer.onclick = finishIntro;
+    introContainer.onclick = () => {
+        clearTimeout(safetyTimeout);
+        finishIntro();
+    };
 
-    // Intentar reproducir automáticamente (silenciado por políticas de navegador)
-    introVideo.muted = true;
+    // Intentar reproducir (aunque ya tenga autoplay en HTML)
     const playPromise = introVideo.play();
-
     if (playPromise !== undefined) {
-        playPromise.catch(() => {
-            // Si falla el autoplay, el usuario debe hacer clic para iniciar
+        playPromise.then(() => {
+            // Video empezó a reproducirse, el timeout ya no es tan crítico pero lo dejamos corto
+        }).catch(err => {
+            console.warn("Autoplay blocked or failed:", err);
             skipBtn.textContent = 'Toca para empezar';
         });
     }
 
-    // Si el usuario toca la pantalla, intentamos desmutear o saltar
-    // (En móviles el primer toque suele ser para habilitar audio)
-    document.addEventListener('touchstart', () => {
+    // Manejar audio en móviles
+    const enableAudio = () => {
         if (introVideo.muted) {
             introVideo.muted = false;
         }
-    }, { once: true });
+        document.removeEventListener('touchstart', enableAudio);
+        document.removeEventListener('mousedown', enableAudio);
+    };
+    document.addEventListener('touchstart', enableAudio);
+    document.addEventListener('mousedown', enableAudio);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
