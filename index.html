@@ -4,7 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Feather Exodus - El Exodo de las Plumas</title>
+    <meta name="description" content="Feather Exodus es un emocionante juego arcade estilo retro donde los patos buscan su libertad. ¡Acompáñalos en este épico éxodo!">
+    <meta name="keywords" content="feather exodus, juego retro, nes style, arcade, patos, exodus game">
     <link rel="icon" type="image/png" href="img/pt.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00e5cc">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jhormancastella.github.io/the-feather-exodus/">
+    <meta property="og:title" content="Feather Exodus - El Exodo de las Plumas">
+    <meta property="og:description" content="Un emocionante juego arcade estilo NES. ¡Ayuda a los patos en su gran aventura!">
+    <meta property="og:image" content="https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/f2_rqusvm.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://jhormancastella.github.io/the-feather-exodus/">
+    <meta property="twitter:title" content="Feather Exodus - El Exodo de las Plumas">
+    <meta property="twitter:description" content="Un emocionante juego arcade estilo NES. ¡Ayuda a los patos en su gran aventura!">
+    <meta property="twitter:image" content="https://res.cloudinary.com/dcqnjn6fe/image/upload/q_auto/f_auto/v1775746503/f2_rqusvm.png">
 
     <!-- Estilos -->
     <link rel="stylesheet" href="css/global.css">
@@ -16,6 +34,15 @@
 </head>
 <body>
 <div id="app">
+
+    <!-- Video de introducción de estudio -->
+    <div id="intro-video-container">
+        <video id="intro-video" playsinline preload="auto" title="Intro Studio Video">
+            <source src="https://res.cloudinary.com/dipv76dpn/video/upload/v1776640929/VID_20260415_084919_181_bsl_2_wawtkk.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+        <div id="intro-skip">Toca para saltar</div>
+    </div>
 
     <!-- Menú Principal estilo NES -->
     <div id="main-menu">

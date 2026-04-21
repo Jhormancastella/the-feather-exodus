@@ -579,7 +579,53 @@ function initMenu() {
     document.addEventListener('keydown', () => playMenuMusic(), { once: true });
 }
 
+/** Maneja el video de introducción */
+function handleIntroVideo() {
+    const introContainer = document.getElementById('intro-video-container');
+    const introVideo = document.getElementById('intro-video');
+    const skipBtn = document.getElementById('intro-skip');
+
+    if (!introContainer || !introVideo) return;
+
+    const finishIntro = () => {
+        introVideo.pause();
+        introContainer.style.transition = 'opacity 0.5s ease';
+        introContainer.style.opacity = '0';
+        setTimeout(() => {
+            introContainer.remove();
+            // Iniciar música del menú si no ha empezado
+            playMenuMusic();
+        }, 500);
+    };
+
+    // Al terminar el video
+    introVideo.onended = finishIntro;
+
+    // Al hacer clic en el contenedor (saltar)
+    introContainer.onclick = finishIntro;
+
+    // Intentar reproducir automáticamente (silenciado por políticas de navegador)
+    introVideo.muted = true;
+    const playPromise = introVideo.play();
+
+    if (playPromise !== undefined) {
+        playPromise.catch(() => {
+            // Si falla el autoplay, el usuario debe hacer clic para iniciar
+            skipBtn.textContent = 'Toca para empezar';
+        });
+    }
+
+    // Si el usuario toca la pantalla, intentamos desmutear o saltar
+    // (En móviles el primer toque suele ser para habilitar audio)
+    document.addEventListener('touchstart', () => {
+        if (introVideo.muted) {
+            introVideo.muted = false;
+        }
+    }, { once: true });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     cacheDOMRefs();
     initMenu();
+    handleIntroVideo();
 });
