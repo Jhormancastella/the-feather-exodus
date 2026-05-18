@@ -20,12 +20,12 @@ function loadLevel(levelIndex) {
     updateHUD();
     updateControlIndicator();
     applySky(levelIndex);
+    // 🐕 Perro ladra al inicio de CADA nivel para espantar a los patos
+    playSound('dog');
+    
     if (levelIndex > 0) {
         showLevelScreen(levelIndex);
         playSound('nextRound');
-    } else {
-        // Nivel 1 — perro ladra al inicio
-        playSound('dog');
     }
     updateUnlocksByLevel(levelIndex);
     saveGameProgress();
@@ -73,6 +73,13 @@ function _startGameSession() {
 function startTransition() {
     state.game.transitioning = true;
     setTransitionIndicator();
+    
+    // 🎵 Si hay patos vivos al finalizar el nivel = escaparon = tirador perdió → risa
+    const survived = state.game.ducks.filter(d => d.alive).length;
+    if (survived > 0) {
+        playSound('laugh');  // 😂 Risa del tirador que falló
+    }
+    
     state.game.ducks.forEach(d => {
         if (d.alive) {
             d.vx  = (Math.random() - 0.5) * 2;

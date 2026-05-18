@@ -1,291 +1,638 @@
 /* ================================================================
    FONDO DEL JUEGO — 4 ciclos: amanecer, mediodía, atardecer, tormenta
+   MEJORADO: Montañas orgánicas, parallax, perspectiva atmosférica
    ================================================================ */
+
+/* ── VARIABLES DE COLOR POR CICLO (fácil de personalizar) ───── */
+:root {
+    /* Amanecer */
+    --dawn-sky-top: #1a0a2e;
+    --dawn-sky-mid: #c0506a;
+    --dawn-sky-bot: #f8c878;
+    --dawn-mountain-far: #4a3a6a;
+    --dawn-mountain-near: #3a2a5a;
+    --dawn-grass: #5a9e32;
+    
+    /* Mediodía */
+    --noon-sky-top: #1a8fd1;
+    --noon-sky-mid: #a8e6f8;
+    --noon-sky-bot: #c8f0a0;
+    --noon-mountain-far: #6a9a7a;
+    --noon-mountain-near: #4a7a5a;
+    --noon-grass: #7bc44a;
+    
+    /* Atardecer */
+    --sunset-sky-top: #0d1b3e;
+    --sunset-sky-mid: #d4604a;
+    --sunset-sky-bot: #f8c060;
+    --sunset-mountain-far: #5a3a4a;
+    --sunset-mountain-near: #4a2a3a;
+    --sunset-grass: #6a9e30;
+    
+    /* Tormenta */
+    --storm-sky-top: #0a0a12;
+    --storm-sky-mid: #2a2a3e;
+    --storm-sky-bot: #2a3a18;
+    --storm-mountain-far: #1a2a1a;
+    --storm-mountain-near: #152015;
+    --storm-grass: #2a4a14;
+}
 
 /* ── TRANSICIÓN SUAVE entre ciclos ──────────────────────────── */
 #game-container {
-    transition: background 2s ease;
+    transition: background 2s ease, filter 2s ease;
+    overflow: hidden;
 }
 
-/* ── AMANECER (niveles 1-2) ──────────────────────────────────── */
+/* ── CIELOS (gradientes mejorados con más profundidad) ──────── */
 #game-container.sky-dawn {
     background: linear-gradient(to bottom,
-        #1a0a2e 0%,
-        #4a1a5e 15%,
-        #c0506a 30%,
-        #f0904a 45%,
-        #f8c878 58%,
-        #8ab84a 68%,
-        #5a9e32 80%,
+        var(--dawn-sky-top) 0%,
+        #4a1a5e 12%,
+        var(--dawn-sky-mid) 28%,
+        #e07050 40%,
+        var(--dawn-sky-bot) 55%,
+        #a0c858 65%,
+        var(--dawn-grass) 78%,
         #2a5a12 100%
     );
 }
-#game-container.sky-dawn .bg-sun {
-    background: #ff8844;
-    top: 38%; right: 12%;
-    box-shadow: 0 0 0 10px rgba(255,140,60,0.3),
-                0 0 0 22px rgba(255,100,40,0.15),
-                0 0 50px rgba(255,80,20,0.5);
-}
-#game-container.sky-dawn .bg-cloud { filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.2)); }
-#game-container.sky-dawn .cloud-a  { background: rgba(255,180,140,0.7); }
-#game-container.sky-dawn .cloud-b  { background: rgba(255,160,120,0.65); }
-#game-container.sky-dawn .cloud-c  { background: rgba(255,200,160,0.6); }
-#game-container.sky-dawn .bg-bird  { border-top-color: rgba(80,20,40,0.5); }
-#game-container.sky-dawn .bg-bird::after { border-top-color: rgba(80,20,40,0.5); }
 
-/* ── MEDIODÍA (niveles 3-4) ──────────────────────────────────── */
 #game-container.sky-noon {
     background: linear-gradient(to bottom,
-        #1a8fd1 0%,
-        #4ec8f0 25%,
-        #a8e6f8 48%,
-        #c8f0a0 65%,
-        #7bc44a 72%,
-        #5a9e32 80%,
-        #3d7a20 90%,
+        var(--noon-sky-top) 0%,
+        #6ec9f2 20%,
+        var(--noon-sky-mid) 45%,
+        #d8f4b8 58%,
+        var(--noon-grass) 70%,
+        #5a9e32 82%,
         #2a5a12 100%
     );
 }
-#game-container.sky-noon .bg-sun {
-    background: #ffe566;
-    top: 10%; right: 8%;
-    box-shadow: 0 0 0 8px rgba(255,230,80,0.25),
-                0 0 0 16px rgba(255,220,60,0.12),
-                0 0 30px rgba(255,200,0,0.4);
-}
-#game-container.sky-noon .cloud-a { background: rgba(255,255,255,0.92); }
-#game-container.sky-noon .cloud-b { background: rgba(255,255,255,0.85); }
-#game-container.sky-noon .cloud-c { background: rgba(255,255,255,0.78); }
 
-/* ── ATARDECER (niveles 5-6) ─────────────────────────────────── */
 #game-container.sky-sunset {
     background: linear-gradient(to bottom,
-        #0d1b3e 0%,
-        #1e3a6e 12%,
-        #8b3a6e 28%,
-        #d4604a 42%,
-        #f09040 55%,
-        #f8c060 62%,
-        #6a9e30 70%,
-        #3a7018 82%,
+        var(--sunset-sky-top) 0%,
+        #2a4a7e 15%,
+        var(--sunset-sky-mid) 35%,
+        #e88050 48%,
+        var(--sunset-sky-bot) 60%,
+        #8ab84a 72%,
+        var(--sunset-grass) 84%,
         #1a4a08 100%
     );
 }
-#game-container.sky-sunset .bg-sun {
-    background: #ff5522;
-    top: 42%; right: 6%;
-    width: 64px; height: 64px;
-    box-shadow: 0 0 0 12px rgba(255,80,30,0.3),
-                0 0 0 28px rgba(255,60,20,0.15),
-                0 0 60px rgba(255,40,0,0.6);
-}
-#game-container.sky-sunset .cloud-a { background: rgba(255,140,80,0.75); }
-#game-container.sky-sunset .cloud-b { background: rgba(255,120,60,0.7); }
-#game-container.sky-sunset .cloud-c { background: rgba(255,160,100,0.65); }
-#game-container.sky-sunset .bg-bird { border-top-color: rgba(60,10,10,0.6); }
-#game-container.sky-sunset .bg-bird::after { border-top-color: rgba(60,10,10,0.6); }
 
-/* ── TORMENTA (niveles 7+) ───────────────────────────────────── */
 #game-container.sky-storm {
     background: linear-gradient(to bottom,
-        #0a0a12 0%,
-        #1a1a2e 20%,
-        #2a2a3e 38%,
-        #3a3a28 55%,
-        #2a3a18 65%,
-        #1a2a10 78%,
+        var(--storm-sky-top) 0%,
+        var(--storm-sky-mid) 25%,
+        #3a3a2e 42%,
+        var(--storm-sky-bot) 58%,
+        #1a2a10 75%,
         #0e1a08 100%
     );
 }
-#game-container.sky-storm .bg-sun { display: none; }
-#game-container.sky-storm .cloud-a { background: rgba(60,60,80,0.9); }
-#game-container.sky-storm .cloud-b { background: rgba(50,50,70,0.85); }
-#game-container.sky-storm .cloud-c { background: rgba(70,70,90,0.8); }
-#game-container.sky-storm .bg-bird { display: none; }
-#game-container.sky-storm .bg-mountains-far {
-    background:
-        radial-gradient(ellipse 120px 160px at 12% 100%, #2a3a1a 99%, transparent 100%),
-        radial-gradient(ellipse 160px 200px at 28% 100%, #1e2e14 99%, transparent 100%),
-        radial-gradient(ellipse 140px 180px at 48% 100%, #2a3a1a 99%, transparent 100%),
-        radial-gradient(ellipse 180px 220px at 68% 100%, #1e2e14 99%, transparent 100%),
-        radial-gradient(ellipse 130px 170px at 85% 100%, #2a3a1a 99%, transparent 100%),
-        radial-gradient(ellipse 100px 140px at 98% 100%, #1e2e14 99%, transparent 100%);
-}
-#game-container.sky-storm .bg-grass-far  { background: #2a4a14; }
-#game-container.sky-storm .bg-grass-mid  { background: linear-gradient(to bottom, #243e10 0%, #1a2e0a 100%); }
-#game-container.sky-storm .bg-grass-near { background: linear-gradient(to bottom, #1a2e0a 0%, #101e06 50%, #080e04 100%); }
-#game-container.sky-storm .bg-flower::before { background: #aabb44; }
 
-/* Relámpago */
-.bg-lightning {
+/* ── SOL mejorado con halo dinámico ─────────────────────────── */
+.bg-sun {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(200,220,255,0.0);
-    z-index: 8;
-    pointer-events: none;
-}
-.bg-lightning.flash {
-    animation: lightningFlash 0.15s ease forwards;
-}
-@keyframes lightningFlash {
-    0%   { background: rgba(200,220,255,0.0); }
-    20%  { background: rgba(200,220,255,0.35); }
-    40%  { background: rgba(200,220,255,0.0); }
-    60%  { background: rgba(200,220,255,0.2); }
-    100% { background: rgba(200,220,255,0.0); }
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    z-index: 1;
+    animation: sunPulse 4s ease-in-out infinite;
+    transition: all 2s ease;
 }
 
-/* Lluvia */
-.bg-rain {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: 7;
-    pointer-events: none;
-    overflow: hidden;
-    display: none;
-}
-#game-container.sky-storm .bg-rain { display: block; }
-
-.rain-drop {
-    position: absolute;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(150,180,220,0.6));
-    animation: rainFall linear infinite;
-}
-@keyframes rainFall {
-    0%   { transform: translateY(-20px); opacity: 0; }
-    10%  { opacity: 1; }
-    100% { transform: translateY(110vh); opacity: 0.3; }
+/* Amanecer: sol bajo y cálido */
+.sky-dawn .bg-sun {
+    background: radial-gradient(circle, #ffaa66 0%, #ff8844 40%, transparent 70%);
+    top: 42%; right: 10%;
+    box-shadow: 
+        0 0 20px rgba(255,120,60,0.6),
+        0 0 60px rgba(255,80,30,0.3),
+        0 0 120px rgba(255,60,20,0.15);
 }
 
-/* ── NUBES base ──────────────────────────────────────────────── */
+/* Mediodía: sol alto y brillante */
+.sky-noon .bg-sun {
+    background: radial-gradient(circle, #fff9cc 0%, #ffe566 40%, #ffd440 70%, transparent 80%);
+    top: 12%; right: 8%;
+    box-shadow: 
+        0 0 15px rgba(255,240,100,0.5),
+        0 0 45px rgba(255,220,60,0.25),
+        0 0 90px rgba(255,200,0,0.1);
+}
+
+/* Atardecer: sol grande y dramático */
+.sky-sunset .bg-sun {
+    background: radial-gradient(circle, #ff7744 0%, #ff5522 40%, #cc3311 70%, transparent 80%);
+    top: 45%; right: 5%;
+    width: 72px; height: 72px;
+    box-shadow: 
+        0 0 30px rgba(255,100,50,0.7),
+        0 0 80px rgba(255,60,30,0.4),
+        0 0 150px rgba(200,40,20,0.2);
+}
+
+/* Tormenta: sin sol visible */
+.sky-storm .bg-sun { display: none; }
+
+@keyframes sunPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.95; }
+}
+
+/* ── NUBES con formas más orgánicas ─────────────────────────── */
 .bg-cloud {
     position: absolute;
     z-index: 2;
-    filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.12));
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.15));
 }
-.bg-cloud::before, .bg-cloud::after {
+
+/* Nube base con múltiples "puffs" */
+.bg-cloud::before,
+.bg-cloud::after,
+.bg-cloud span {
     content: '';
     position: absolute;
     background: inherit;
     border-radius: 50%;
 }
-.cloud-a { width: 80px; height: 28px; border-radius: 28px; }
-.cloud-a::before { width: 40px; height: 40px; top: -20px; left: 12px; }
-.cloud-a::after  { width: 28px; height: 28px; top: -14px; left: 38px; }
-.cloud-b { width: 56px; height: 20px; border-radius: 20px; }
-.cloud-b::before { width: 28px; height: 28px; top: -14px; left: 8px; }
-.cloud-b::after  { width: 20px; height: 20px; top: -10px; left: 28px; }
-.cloud-c { width: 38px; height: 14px; border-radius: 14px; }
-.cloud-c::before { width: 18px; height: 18px; top: -9px; left: 6px; }
-.cloud-c::after  { width: 13px; height: 13px; top: -6px; left: 20px; }
 
-@keyframes cloudDrift1 { 0%{transform:translateX(0)} 100%{transform:translateX(110vw)} }
-@keyframes cloudDrift2 { 0%{transform:translateX(0)} 100%{transform:translateX(110vw)} }
-@keyframes cloudDrift3 { 0%{transform:translateX(0)} 100%{transform:translateX(110vw)} }
-.cloud-move-1 { animation: cloudDrift1 28s linear infinite; }
-.cloud-move-2 { animation: cloudDrift2 38s linear infinite; }
-.cloud-move-3 { animation: cloudDrift3 22s linear infinite; }
-.cloud-move-4 { animation: cloudDrift1 45s linear infinite; }
-.cloud-move-5 { animation: cloudDrift2 32s linear infinite; }
-.cloud-move-6 { animation: cloudDrift3 52s linear infinite; }
+.cloud-a {
+    width: 100px; height: 36px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 40px;
+}
+.cloud-a::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+.cloud-a::after  { width: 36px; height: 36px; top: -18px; left: 50px; }
+.cloud-a span {
+    width: 28px; height: 28px;
+    top: -14px; left: 25px;
+}
 
-/* Nubes de tormenta más rápidas */
-#game-container.sky-storm .cloud-move-1 { animation-duration: 14s; }
-#game-container.sky-storm .cloud-move-2 { animation-duration: 18s; }
-#game-container.sky-storm .cloud-move-3 { animation-duration: 11s; }
-#game-container.sky-storm .cloud-move-4 { animation-duration: 20s; }
-#game-container.sky-storm .cloud-move-5 { animation-duration: 15s; }
-#game-container.sky-storm .cloud-move-6 { animation-duration: 24s; }
+.cloud-b { width: 70px; height: 26px; border-radius: 30px; background: rgba(255,255,255,0.78); }
+.cloud-b::before { width: 36px; height: 36px; top: -18px; left: 10px; }
+.cloud-b::after  { width: 24px; height: 24px; top: -12px; left: 38px; }
 
-/* ── SOL base ────────────────────────────────────────────────── */
-.bg-sun {
+.cloud-c { width: 48px; height: 18px; border-radius: 22px; background: rgba(255,255,255,0.7); }
+.cloud-c::before { width: 24px; height: 24px; top: -12px; left: 8px; }
+
+/* Colores de nubes por ciclo */
+.sky-dawn .bg-cloud { background: rgba(255,200,170,0.75); filter: drop-shadow(0 2px 4px rgba(80,30,20,0.3)); }
+.sky-noon .bg-cloud { background: rgba(255,255,255,0.92); }
+.sky-sunset .bg-cloud { background: rgba(255,160,120,0.7); filter: drop-shadow(0 2px 4px rgba(60,20,10,0.4)); }
+.sky-storm .bg-cloud { 
+    background: rgba(80,80,100,0.85); 
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+
+/* Animaciones de deriva con diferentes velocidades (parallax) */
+@keyframes cloudDrift { 0% { transform: translateX(-120px); } 100% { transform: translateX(calc(100vw + 120px)); } }
+.cloud-move-1 { animation: cloudDrift 45s linear infinite; }
+.cloud-move-2 { animation: cloudDrift 62s linear infinite; animation-delay: -15s; }
+.cloud-move-3 { animation: cloudDrift 38s linear infinite; animation-delay: -8s; }
+.cloud-move-4 { animation: cloudDrift 72s linear infinite; animation-delay: -25s; }
+.cloud-move-5 { animation: cloudDrift 54s linear infinite; animation-delay: -35s; }
+.cloud-move-6 { animation: cloudDrift 88s linear infinite; animation-delay: -50s; }
+
+/* Tormenta: nubes más rápidas y oscuras */
+.sky-storm .cloud-move-1 { animation-duration: 22s; }
+.sky-storm .cloud-move-2 { animation-duration: 30s; }
+.sky-storm .cloud-move-3 { animation-duration: 18s; }
+
+/* ── MONTAÑAS LEJANAS (siluetas orgánicas con clip-path) ────── */
+.bg-mountains-far {
     position: absolute;
-    top: 14%; right: 8%;
-    width: 52px; height: 52px;
-    background: #ffe566;
-    border-radius: 50%;
+    bottom: 30%; left: 0; right: 0; height: 22%;
     z-index: 1;
-    animation: sunPulse 4s ease-in-out infinite;
-    transition: background 2s, top 2s, right 2s, width 2s, height 2s;
-}
-@keyframes sunPulse {
-    0%,100% { box-shadow: 0 0 0 8px rgba(255,230,80,0.25), 0 0 0 16px rgba(255,220,60,0.12), 0 0 30px rgba(255,200,0,0.4); }
-    50%      { box-shadow: 0 0 0 12px rgba(255,230,80,0.3), 0 0 0 24px rgba(255,220,60,0.15), 0 0 45px rgba(255,200,0,0.5); }
+    /* Silueta de montañas con clip-path para formas jagged */
+    background: linear-gradient(to bottom, transparent 40%, currentColor 40%);
+    color: var(--dawn-mountain-far);
+    clip-path: polygon(
+        0% 100%, 0% 60%, 8% 45%, 12% 52%, 18% 38%, 24% 48%, 
+        30% 42%, 36% 50%, 42% 35%, 48% 44%, 54% 38%, 60% 46%,
+        66% 40%, 72% 50%, 78% 42%, 84% 52%, 90% 44%, 96% 54%, 100% 48%, 100% 100%
+    );
+    /* Efecto de neblina atmosférica */
+    filter: blur(1px) saturate(0.8);
+    opacity: 0.7;
+    transition: all 2s ease;
 }
 
-/* ── PÁJAROS ─────────────────────────────────────────────────── */
+/* Montañas cercanas - más definidas y oscuras */
+.bg-mountains-near {
+    position: absolute;
+    bottom: 28%; left: 0; right: 0; height: 16%;
+    z-index: 2;
+    background: linear-gradient(to bottom, transparent 30%, currentColor 30%);
+    color: var(--dawn-mountain-near);
+    clip-path: polygon(
+        0% 100%, 0% 70%, 6% 55%, 14% 62%, 22% 48%, 30% 56%,
+        38% 45%, 46% 52%, 54% 42%, 62% 50%, 70% 44%, 78% 54%,
+        86% 46%, 94% 56%, 100% 50%, 100% 100%
+    );
+    filter: blur(0.5px);
+    opacity: 0.9;
+    transition: all 2s ease;
+}
+
+/* ── COLORES DE MONTAÑAS POR CICLO ──────────────────────────── */
+/* Amanecer */
+.sky-dawn .bg-mountains-far { 
+    color: var(--dawn-mountain-far); 
+    filter: blur(1.2px) saturate(0.7);
+}
+.sky-dawn .bg-mountains-near { 
+    color: var(--dawn-mountain-near); 
+    filter: blur(0.6px) saturate(0.85);
+}
+
+/* Mediodía */
+.sky-noon .bg-mountains-far { 
+    color: var(--noon-mountain-far); 
+    filter: blur(1px) saturate(0.9);
+}
+.sky-noon .bg-mountains-near { 
+    color: var(--noon-mountain-near); 
+    filter: blur(0.4px) saturate(1);
+}
+
+/* Atardecer */
+.sky-sunset .bg-mountains-far { 
+    color: var(--sunset-mountain-far); 
+    filter: blur(1.3px) saturate(0.6);
+}
+.sky-sunset .bg-mountains-near { 
+    color: var(--sunset-mountain-near); 
+    filter: blur(0.7px) saturate(0.8);
+}
+
+/* Tormenta */
+.sky-storm .bg-mountains-far { 
+    color: var(--storm-mountain-far); 
+    filter: blur(1.5px) saturate(0.4) brightness(0.7);
+    opacity: 0.6;
+}
+.sky-storm .bg-mountains-near { 
+    color: var(--storm-mountain-near); 
+    filter: blur(0.8px) saturate(0.5) brightness(0.8);
+    opacity: 0.8;
+}
+
+/* ── CAPA DE NIEBLA ATMOSFÉRICA (nueva) ─────────────────────── */
+.bg-mist {
+    position: absolute;
+    bottom: 26%; left: 0; right: 0; height: 8%;
+    z-index: 2;
+    background: linear-gradient(to top, 
+        transparent 0%, 
+        rgba(200,220,255,0.08) 50%, 
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 2s ease;
+    pointer-events: none;
+}
+.sky-dawn .bg-mist { opacity: 0.4; background: linear-gradient(to top, transparent, rgba(240,180,140,0.12), transparent); }
+.sky-noon .bg-mist { opacity: 0.2; }
+.sky-sunset .bg-mist { opacity: 0.5; background: linear-gradient(to top, transparent, rgba(240,140,100,0.15), transparent); }
+.sky-storm .bg-mist { 
+    opacity: 0.7; 
+    background: linear-gradient(to top, transparent, rgba(100,110,130,0.25), rgba(80,90,110,0.15), transparent);
+    animation: mistDrift 20s ease-in-out infinite;
+}
+
+@keyframes mistDrift {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(2%); }
+}
+
+/* ── ÁRBOLES Y VEGETACIÓN (nuevo) ───────────────────────────── */
+.bg-trees {
+    position: absolute;
+    bottom: 24%; left: 0; right: 0; height: 8%;
+    z-index: 3;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 2%;
+    pointer-events: none;
+}
+
+.tree {
+    position: relative;
+    width: 8px;
+    height: 24px;
+    background: linear-gradient(to right, #2a4a18, #3a6a28, #2a4a18);
+    border-radius: 2px 2px 0 0;
+    transform-origin: bottom center;
+    animation: treeSway 6s ease-in-out infinite;
+}
+
+.tree::before {
+    content: '';
+    position: absolute;
+    top: -16px; left: -8px;
+    width: 24px; height: 20px;
+    background: currentColor;
+    border-radius: 50% 50% 30% 30%;
+    color: inherit;
+}
+
+.tree::after {
+    content: '';
+    position: absolute;
+    top: -10px; left: -5px;
+    width: 18px; height: 14px;
+    background: currentColor;
+    border-radius: 40% 40% 20% 20%;
+    opacity: 0.85;
+}
+
+/* Colores de árboles por ciclo */
+.sky-dawn .tree { color: #4a7a38; animation-delay: -2s; }
+.sky-noon .tree { color: #5a9a48; animation-delay: -4s; }
+.sky-sunset .tree { color: #3a5a28; animation-delay: -1s; }
+.sky-storm .tree { 
+    color: #2a3a18; 
+    filter: saturate(0.6) brightness(0.8);
+    animation-duration: 4s;
+}
+
+@keyframes treeSway {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1.5deg); }
+}
+
+/* ── PASTO con más textura y profundidad ────────────────────── */
+.bg-grass-far {
+    position: absolute;
+    bottom: 22%; left: 0; right: 0; height: 7%;
+    z-index: 4;
+    background: var(--dawn-grass);
+    border-radius: 60% 60% 0 0 / 40px 40px 0 0;
+    transition: background 2s ease;
+}
+
+.bg-grass-mid {
+    position: absolute;
+    bottom: 16%; left: 0; right: 0; height: 9%;
+    z-index: 5;
+    background: linear-gradient(to bottom, #5ab83a, var(--dawn-grass));
+    transition: background 2s ease;
+}
+
+.bg-grass-near {
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 22%;
+    z-index: 6;
+    background: linear-gradient(to bottom, #4a9e2a, #3a7e1a 45%, #2a5e0a);
+    transition: background 2s ease;
+}
+
+/* Textura de pasto con "briznas" animadas */
+.bg-grass-near::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 20px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(120,200,60,0.3) 8px,
+        rgba(120,200,60,0.3) 10px
+    );
+    animation: grassShimmer 3s ease-in-out infinite;
+}
+
+@keyframes grassShimmer {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+}
+
+/* Colores de pasto por ciclo */
+.sky-noon .bg-grass-far { background: var(--noon-grass); }
+.sky-noon .bg-grass-mid { background: linear-gradient(to bottom, #7ad85a, var(--noon-grass)); }
+.sky-noon .bg-grass-near { background: linear-gradient(to bottom, #6ac84a, #4aa82a 45%, #2a780a); }
+
+.sky-sunset .bg-grass-far { background: var(--sunset-grass); }
+.sky-sunset .bg-grass-mid { background: linear-gradient(to bottom, #6ab840, var(--sunset-grass)); }
+.sky-sunset .bg-grass-near { background: linear-gradient(to bottom, #5aa830, #3a8818 45%, #1a6808); }
+
+.sky-storm .bg-grass-far { background: var(--storm-grass); filter: saturate(0.5) brightness(0.8); }
+.sky-storm .bg-grass-mid { background: linear-gradient(to bottom, #3a6a20, var(--storm-grass)); filter: saturate(0.6) brightness(0.85); }
+.sky-storm .bg-grass-near { 
+    background: linear-gradient(to bottom, #2a5a10, #1a4a08 45%, #0a2a04); 
+    filter: saturate(0.7) brightness(0.9);
+}
+
+/* ── FLORES mejoradas con animación sutil ───────────────────── */
+.bg-flower {
+    position: absolute;
+    z-index: 7;
+    width: 4px; height: 14px;
+    background: linear-gradient(to bottom, #3a7a18, #2a5a08);
+    border-radius: 2px;
+    animation: flowerSway 5s ease-in-out infinite;
+}
+
+.bg-flower::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: -4px;
+    width: 12px; height: 10px;
+    border-radius: 50%;
+    background: #ffdd55;
+    box-shadow: 0 0 4px rgba(255,220,80,0.6);
+    transition: background 2s ease;
+}
+
+/* Variaciones de flores */
+.bg-flower.flower-b::before { background: #ff99bb; box-shadow: 0 0 4px rgba(255,150,180,0.6); }
+.bg-flower.flower-c::before { background: #aabbff; box-shadow: 0 0 4px rgba(150,180,255,0.6); }
+
+@keyframes flowerSway {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(3deg); }
+}
+
+/* Colores de flores por ciclo */
+.sky-dawn .bg-flower::before { background: #ffcc66; }
+.sky-sunset .bg-flower::before { background: #ffaa44; }
+.sky-storm .bg-flower { 
+    filter: saturate(0.4) brightness(0.7);
+    animation-duration: 3s;
+}
+.sky-storm .bg-flower::before { background: #8899aa; box-shadow: none; }
+
+/* ── ROCAS decorativas en primer plano (nuevo) ──────────────── */
+.bg-rocks {
+    position: absolute;
+    bottom: 2%; left: 0; right: 0; height: 12%;
+    z-index: 6;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 5%;
+    pointer-events: none;
+}
+
+.rock {
+    width: 20px; height: 14px;
+    background: linear-gradient(135deg, #6a7a5a, #4a5a3a);
+    border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
+    box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), 2px 3px 4px rgba(0,0,0,0.15);
+}
+.rock::before {
+    content: '';
+    position: absolute;
+    top: 2px; left: 3px;
+    width: 8px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+}
+
+.rock.small { width: 14px; height: 10px; }
+.rock.large { width: 28px; height: 18px; }
+
+/* ── PÁJAROS con más detalle ────────────────────────────────── */
 .bg-bird {
     position: absolute;
     z-index: 3;
-    width: 12px; height: 4px;
-    border-top: 3px solid rgba(30,60,100,0.35);
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    width: 16px; height: 6px;
 }
+
+/* Pájaro en forma de V con dos alas */
+.bg-bird::before,
 .bg-bird::after {
     content: '';
     position: absolute;
-    right: -6px; top: -3px;
-    width: 6px; height: 4px;
-    border-top: 3px solid rgba(30,60,100,0.35);
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    width: 8px; height: 2px;
+    background: currentColor;
+    border-radius: 2px;
 }
-@keyframes birdFly { 0%{transform:translateX(-60px)} 100%{transform:translateX(110vw)} }
-.bird-1 { animation: birdFly 18s linear infinite; top: 18%; }
-.bird-2 { animation: birdFly 24s 4s linear infinite; top: 22%; }
-.bird-3 { animation: birdFly 20s 9s linear infinite; top: 15%; }
+.bg-bird::before {
+    top: 2px; left: 0;
+    transform: rotate(-25deg);
+    transform-origin: right center;
+}
+.bg-bird::after {
+    top: 2px; right: 0;
+    transform: rotate(25deg);
+    transform-origin: left center;
+}
 
-/* ── MONTAÑAS ────────────────────────────────────────────────── */
-.bg-mountains-far {
+/* Colores y animaciones */
+.sky-dawn .bg-bird { color: rgba(60,30,40,0.6); }
+.sky-noon .bg-bird { color: rgba(40,60,90,0.5); }
+.sky-sunset .bg-bird { color: rgba(50,20,20,0.7); }
+
+@keyframes birdFly { 
+    0% { transform: translateX(-80px) translateY(0); }
+    25% { transform: translateX(25vw) translateY(-8px); }
+    50% { transform: translateX(50vw) translateY(0); }
+    75% { transform: translateX(75vw) translateY(-5px); }
+    100% { transform: translateX(calc(100vw + 80px)) translateY(0); }
+}
+
+.bird-1 { animation: birdFly 28s linear infinite; top: 20%; animation-delay: -8s; }
+.bird-2 { animation: birdFly 36s linear infinite; top: 25%; animation-delay: -18s; }
+.bird-3 { animation: birdFly 32s linear infinite; top: 16%; animation-delay: -4s; }
+
+/* Sin pájaros en tormenta */
+.sky-storm .bg-bird { display: none; }
+
+/* ── EFECTOS DE TORMENTA (mejorados) ───────────────────────── */
+.bg-lightning {
     position: absolute;
-    bottom: 28%; left: 0; right: 0; height: 18%;
-    z-index: 1;
-    background:
-        radial-gradient(ellipse 120px 160px at 12% 100%, #5a8a3a 99%, transparent 100%),
-        radial-gradient(ellipse 160px 200px at 28% 100%, #4e7d30 99%, transparent 100%),
-        radial-gradient(ellipse 140px 180px at 48% 100%, #5a8a3a 99%, transparent 100%),
-        radial-gradient(ellipse 180px 220px at 68% 100%, #4e7d30 99%, transparent 100%),
-        radial-gradient(ellipse 130px 170px at 85% 100%, #5a8a3a 99%, transparent 100%),
-        radial-gradient(ellipse 100px 140px at 98% 100%, #4e7d30 99%, transparent 100%);
-    transition: background 2s;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(180,200,240,0);
+    z-index: 10;
+    pointer-events: none;
 }
-.bg-mountains-near {
+.bg-lightning.flash {
+    animation: lightningFlash 0.12s ease forwards;
+}
+@keyframes lightningFlash {
+    0%   { background: rgba(180,200,240,0); }
+    15%  { background: rgba(220,235,255,0.5); }
+    30%  { background: rgba(180,200,240,0); }
+    50%  { background: rgba(220,235,255,0.35); }
+    100% { background: rgba(180,200,240,0); }
+}
+
+.bg-rain {
     position: absolute;
-    bottom: 26%; left: 0; right: 0; height: 14%;
-    z-index: 2;
-    background:
-        radial-gradient(ellipse 100px 130px at 5%  100%, #3d6b22 99%, transparent 100%),
-        radial-gradient(ellipse 140px 170px at 20% 100%, #336018 99%, transparent 100%),
-        radial-gradient(ellipse 120px 150px at 38% 100%, #3d6b22 99%, transparent 100%),
-        radial-gradient(ellipse 160px 190px at 57% 100%, #336018 99%, transparent 100%),
-        radial-gradient(ellipse 110px 140px at 74% 100%, #3d6b22 99%, transparent 100%),
-        radial-gradient(ellipse 130px 160px at 90% 100%, #336018 99%, transparent 100%);
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9;
+    pointer-events: none;
+    display: none;
+    overflow: hidden;
+}
+.sky-storm .bg-rain { display: block; }
+
+.rain-drop {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+        transparent, 
+        rgba(140,170,210,0.7) 30%, 
+        rgba(120,150,200,0.4) 100%
+    );
+    border-radius: 0 0 1px 1px;
+    animation: rainFall linear infinite;
+}
+@keyframes rainFall {
+    0%   { transform: translateY(-30px) translateX(0); opacity: 0; }
+    10%  { opacity: 1; }
+    100% { transform: translateY(110vh) translateX(15px); opacity: 0.2; }
 }
 
-/* ── PASTO ───────────────────────────────────────────────────── */
-.bg-grass-far  { position:absolute; bottom:24%; left:0; right:0; height:6%;  z-index:3; background:#5aaa2a; border-radius:50% 50% 0 0/30px 30px 0 0; transition:background 2s; }
-.bg-grass-mid  { position:absolute; bottom:18%; left:0; right:0; height:8%;  z-index:4; background:linear-gradient(to bottom,#4a9e20,#3a8010); transition:background 2s; }
-.bg-grass-near { position:absolute; bottom:0;   left:0; right:0; height:20%; z-index:5; background:linear-gradient(to bottom,#3a8010,#2a6008 50%,#1a4a04); transition:background 2s; }
-.bg-grass-near::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:12px;
-    background: repeating-linear-gradient(90deg, transparent 0px, transparent 6px, rgba(80,180,20,0.4) 6px, rgba(80,180,20,0.4) 8px);
+/* ── PARALLAX SUTIL para capas de fondo ─────────────────────── */
+/* Las montañas lejanas se mueven más lento que las cercanas */
+/* Esto se controla desde JS con transform: translateX() basado en scroll/mouse */
+/* Aquí definimos las clases base para el efecto */
+.parallax-layer {
+    will-change: transform;
+    transition: transform 0.1s ease-out;
 }
+.parallax-slow { /* montañas lejanas */ }
+.parallax-fast { /* pasto cercano */ }
 
-/* ── FLORES ──────────────────────────────────────────────────── */
-.bg-flower { position:absolute; z-index:6; width:6px; height:10px; background:#2a6008; }
-.bg-flower::before {
-    content:''; position:absolute; top:-5px; left:-3px;
-    width:12px; height:8px; border-radius:50%;
-    background:#ffdd44; box-shadow:0 0 3px rgba(255,200,0,0.5);
-    transition: background 2s;
-}
-
-/* ── RESPONSIVE ──────────────────────────────────────────────── */
+/* ── RESPONSIVE mejorado ───────────────────────────────────── */
 @media (max-width: 768px) {
-    .bg-sun { width:38px; height:38px; top:10%; right:5%; }
-    .cloud-a { width:60px; height:20px; }
-    .cloud-b { width:42px; height:15px; }
-    .bg-mountains-far  { height:14%; bottom:30%; }
-    .bg-mountains-near { height:10%; bottom:28%; }
+    .bg-sun { width: 38px; height: 38px; top: 8%; right: 4%; }
+    
+    .cloud-a { width: 70px; height: 26px; }
+    .cloud-b { width: 50px; height: 18px; }
+    
+    .bg-mountains-far  { height: 18%; bottom: 32%; clip-path: polygon(0% 100%,0% 65%,10% 50%,20% 58%,30% 46%,40% 54%,50% 44%,60% 52%,70% 46%,80% 56%,90% 48%,100% 58%,100% 100%); }
+    .bg-mountains-near { height: 13%; bottom: 30%; clip-path: polygon(0% 100%,0% 72%,12% 60%,24% 68%,36% 56%,48% 64%,60% 54%,72% 62%,84% 56%,96% 66%,100% 60%,100% 100%); }
+    
+    .tree { width: 6px; height: 18px; }
+    .tree::before { width: 18px; height: 14px; top: -12px; left: -6px; }
+    
+    .bg-grass-near { height: 24%; }
+    
+    .rock { width: 16px; height: 11px; }
+    .rock.large { width: 22px; height: 14px; }
+}
+
+@media (max-width: 480px) {
+    .bg-cloud { display: none; } /* Simplificar en móviles muy pequeños */
+    .bg-bird { display: none; }
+    .bg-trees { display: none; }
+    
+    .bg-mountains-far { filter: blur(2px); }
+    .bg-mountains-near { filter: blur(1px); }
+}
+
+/* ── ACCESIBILIDAD: reducir movimiento si el usuario lo prefiere ─ */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .parallax-layer { transform: none !important; }
 }

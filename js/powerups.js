@@ -80,6 +80,9 @@ function _collectPowerup(pu, duck) {
     pu.el.classList.add('powerup-collect');
     setTimeout(() => _removePowerup(pu), 400);
 
+    // 🦆 ¡NUEVO! Aplicar poder a TODA la bandada, no solo al pato controlado
+    const allAliveDucks = state.game.ducks.filter(d => d.alive);
+
     // Aplicar efecto
     switch (pu.type) {
         case 'coin':
@@ -89,24 +92,34 @@ function _collectPowerup(pu, duck) {
             break;
 
         case 'shield':
-            // Invencibilidad de 5s: 5000ms / 16ms por frame * 0.5 decremento = ~156 unidades
-            duck.invincible = 156;
-            duck.el.classList.add('duck-shielded');
-            _showFloatingText(pu.el, '🛡️', '#00aaff');
+            // 🛡️ ESCUDO COMPARTIDO: Todos los patos ganan invencibilidad
+            allAliveDucks.forEach(d => {
+                d.invincible = 156; // 5000ms / 16ms * 0.5
+                d.el.classList.add('duck-shielded');
+            });
+            _showFloatingText(pu.el, '🛡️ BANDADA', '#00aaff');
+            // Remover el efecto después de 5 segundos
             setTimeout(() => {
-                duck.el.classList.remove('duck-shielded');
-                duck.invincible = 0;
+                allAliveDucks.forEach(d => {
+                    if (d.alive) {
+                        d.el.classList.remove('duck-shielded');
+                        d.invincible = 0;
+                    }
+                });
             }, 5000);
             break;
 
         case 'heart':
-            duck.health = Math.min(100, duck.health + 40);
-            const fill = duck.el.querySelector('.duck-health-fill');
-            if (fill) {
-                fill.style.width      = duck.health + '%';
-                fill.style.background = healthColor(duck.health);
-            }
-            _showFloatingText(pu.el, '+❤️', '#ff4466');
+            // ❤️ CURACIÓN COMPARTIDA: Todos los patos recuperan vida
+            allAliveDucks.forEach(d => {
+                d.health = Math.min(100, d.health + 25); // 25 HP cada uno (menos que antes para balance)
+                const fill = d.el.querySelector('.duck-health-fill');
+                if (fill) {
+                    fill.style.width      = d.health + '%';
+                    fill.style.background = healthColor(d.health);
+                }
+            });
+            _showFloatingText(pu.el, '+❤️ TODOS', '#ff4466');
             break;
     }
 }

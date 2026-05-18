@@ -69,8 +69,15 @@ function updatePhysics() {
             if (ix > 0) duck.dir =  1;
             if (ix < 0) duck.dir = -1;
         } else {
-            if (Math.abs(duck.vx) < 0.3) duck.vx = Math.random() > 0.5 ? 1 : -1;
-            if (Math.random() < 0.03)    duck.vy = (Math.random() - 0.5) * 2;
+            // 🦆 FLOCK FOLLOW: Los patos NPC siguen al pato controlado con comportamiento orgánico
+            const playerDuck = g.ducks[g.currentDuckIdx];
+            if (playerDuck && playerDuck.alive) {
+                _updateFlockBehavior(duck, idx, playerDuck, g.ducks);
+            } else {
+                // Comportamiento aleatorio si no hay líder
+                if (Math.abs(duck.vx) < 0.3) duck.vx = Math.random() > 0.5 ? 1 : -1;
+                if (Math.random() < 0.03)    duck.vy = (Math.random() - 0.5) * 2;
+            }
             duck.dir = duck.vx > 0 ? 1 : -1;
         }
 
@@ -95,6 +102,67 @@ function updatePhysics() {
     });
 
     if (!g.keys[' '] && g.boost < 100) g.boost = Math.min(100, g.boost + 0.2);
+}
+
+// 🦆 SISTEMA DE BANDADA: Comportamiento orgánico de seguimiento
+function _updateFlockBehavior(duck, idx, playerDuck, allDucks) {
+    // Cada pato NPC sigue al jugador o al pato anterior en la formación
+    const target = (idx === 0) ? playerDuck : allDucks[idx - 1];
+    if (!target || !target.alive) return;
+
+    // Distancia objetivo: separación natural en formación en V
+    const desiredDist = 55 + (idx * 8); // Más lejos = más atrás en la formación
+    const dx = target.x - duck.x;
+    const dy = target.y - duck.y;
+    const dist = Math.hypot(dx, dy);
+
+    // 🎯 ATRACCIÓN: Si está lejos, se acerca suavemente
+    if (dist > desiredDist) {
+        const force = 0.03 + (idx * 0.005); // Los de atrás siguen con más delay
+        duck.vx += (dx / dist) * force;
+        duck.vy += (dy / dist) * force;
+    }
+    // 🚫 REPULSIÓN: Si está muy cerca, se aleja para no amontonarse
+    else if (dist < 30) {
+        duck.vx -= (dx / dist) * 0.08;
+        duck.vy -= (dy / dist) * 0.08;
+    }
+
+    // 🔄 SEPARACIÓN: Evitar colisión con otros patos NPC (comportamiento de bandada)
+    allDucks.forEach((other, i) => {
+        if (i === idx || i === state.game.currentDuckIdx || !other.alive) return;
+        const sepX = duck.x - other.x;
+        const sepY = duck.y - other.y;
+        const sepDist = Math.hypot(sepX, sepY);
+        if (sepDist < 35 && sepDist > 0) {
+            // Fuerza de separación suave
+            duck.vx += (sepX / sepDist) * 0.04;
+            duck.vy += (sepY / sepDist) * 0.04;
+        }
+    });
+
+    // ⚡ COHESIÓN: Tendencia a mantenerse cerca del centro de la bandada
+    if (dist > desiredDist * 1.5) {
+        duck.vx += (dx / dist) * 0.02;
+        duck.vy += (dy / dist) * 0.02;
+    }
+
+    // 🎮 SINCRONIZACIÓN DE VELOCIDAD: La bandada acelera si el jugador usa boost
+    const playerBoosting = state.game.keys[' '] && state.game.boost > 0;
+    if (playerBoosting) {
+        // Los NPCs aceleran para no quedarse atrás durante el boost
+        const boostFollow = 0.8; // 80% de la velocidad del boost
+        if (Math.abs(duck.vx) < 4) duck.vx += Math.sign(dx) * 0.1;
+        if (Math.abs(duck.vy) < 4) duck.vy += Math.sign(dy) * 0.1;
+    }
+
+    // 🧭 LIMITAR VELOCIDAD MÁXIMA de NPCs (para que el jugador pueda superarlos si quiere)
+    const maxSpeed = playerBoosting ? 4 : 2.8;
+    const currentSpeed = Math.hypot(duck.vx, duck.vy);
+    if (currentSpeed > maxSpeed) {
+        duck.vx = (duck.vx / currentSpeed) * maxSpeed;
+        duck.vy = (duck.vy / currentSpeed) * maxSpeed;
+    }
 }
 
 function updateAllSprites() {
@@ -128,7 +196,7 @@ function killDuck(duck) {
     duck.el.classList.remove('controlled');
     duck.el.style.transform = 'none';
     _applySprite(duck, SPRITES[duck.type].falling[0]);
-    playSound('fall');
+    playSound('fall');  // Solo sonido de caída, sin risa
 
     let fallY     = duck.y;
     let fallFrame = 0;

@@ -1,7 +1,8 @@
 // --- SISTEMA DE AUDIO ---
 
 const SOUNDS = {
-    dog:       'https://res.cloudinary.com/dcqnjn6fe/video/upload/q_auto/f_auto/v1775748471/Voicy_Dog_Barking_vm1eoc.mp3',
+    dog:       'https://res.cloudinary.com/dipv76dpn/video/upload/v1779132933/Voicy_Dog_Barking_ivpduy.mp3',
+    laugh:     'https://res.cloudinary.com/dipv76dpn/video/upload/v1779132787/Voicy_Dog_Laughing_dykxsa.mp3',
     fall:      'https://res.cloudinary.com/dcqnjn6fe/video/upload/q_auto/f_auto/v1775748471/Voicy_Duck_Falling_W_Drop_jydati.mp3',
     shot:      'https://res.cloudinary.com/dcqnjn6fe/video/upload/q_auto/f_auto/v1775748471/Voicy_Gun_Shot_ezrtgg.mp3',
     lose:      'https://res.cloudinary.com/dcqnjn6fe/video/upload/q_auto/f_auto/v1775748472/Voicy_Lose_Sound_1_gei1hp.mp3',
